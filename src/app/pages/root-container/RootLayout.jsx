@@ -1,5 +1,6 @@
 import "./root-layout.css";
 import Navbar from "../../components/proprietary/Navbar";
+import { Outlet } from "react-router-dom";
 
 const RootLayout = () => {
   return (
@@ -13,7 +14,9 @@ const RootLayout = () => {
         <aside className="main-side-panel">
           <Navbar />
         </aside>
-        <main className="main-content-container"></main>
+        <main className="main-content-container">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
