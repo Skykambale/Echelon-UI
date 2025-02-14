@@ -19,4 +19,5 @@ header {
 .main-content-container {
   width: 85%;
   height: 100%;
+  background-color: #333 !important;
 }

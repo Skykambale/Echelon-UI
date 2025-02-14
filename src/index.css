@@ -71,3 +71,29 @@
 /* * {
   transition: width 0.15s ease-in-out;
 } */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+}
+
+/* Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 6px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker color on hover */
+}

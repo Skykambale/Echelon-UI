@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import Task from "@/app/components/Task";
 
 const TaskDashboard = () => {
   const [date, setDate] = useState(new Date());
@@ -47,7 +48,7 @@ const TaskDashboard = () => {
             <ChevronRight />
           </Button>
         </div>
-        <div className="border border-slate-600 rounded">
+        <div className="border border-slate-600 rounded bg-[#111]">
           <div>
             <div className="p-2 flex justify-between items-center">
               <Select
@@ -83,8 +84,16 @@ const TaskDashboard = () => {
               </Select>
             </div>
             <div className="w-full h-[.5px] bg-slate-600"></div>
-            <div className="p-2 h-[60vh]">
+            <div className="p-2 h-[60vh] overflow-auto">
               {/* here will be the list of tasks */}
+              {tasks.map((task) => (
+                <Task
+                  key={task.title}
+                  title={task.title}
+                  description={task.description}
+                  status={task.status}
+                />
+              ))}
             </div>
             <div className="w-full h-[.5px] bg-slate-600"></div>
             <div className="p-2 flex justify-end items-center">
@@ -100,3 +109,36 @@ const TaskDashboard = () => {
 };
 
 export default TaskDashboard;
+
+const tasks = [
+  {
+    title: "Task 1",
+    description: "Description 1",
+    status: "inProgress",
+  },
+  {
+    title: "Task 2",
+    description: "Description 2",
+    status: "done",
+  },
+  {
+    title: "Task 3",
+    description: "Description 3",
+    status: "inProgress",
+  },
+  {
+    title: "Task 4",
+    description: "Description 4",
+    status: "todo",
+  },
+  {
+    title: "Task 5",
+    description: "Description 5",
+    status: "done",
+  },
+  {
+    title: "Task 6",
+    description: "Description 6",
+    status: "inProgress",
+  },
+];
