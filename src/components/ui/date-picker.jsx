@@ -16,15 +16,17 @@ import { formatDateString } from "@/utils/format-date";
 DatePicker.propTypes = {
   date: PropTypes.instanceOf(Date).isRequired,
   setDate: PropTypes.func.isRequired,
+  className: PropTypes.string,
 };
-export function DatePicker({ date, setDate }) {
+export function DatePicker({ date, setDate, className }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal text-zinc-700"
+            "w-[280px] justify-start text-left font-normal text-zinc-700",
+            className
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
