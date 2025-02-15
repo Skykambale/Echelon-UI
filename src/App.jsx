@@ -8,7 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route
-          path="/home"
+          path="/"
           element={
             <SignedOut>
               <div>
@@ -19,7 +19,7 @@ function App() {
           }
         ></Route>
 
-        <Route path="/" element={<RootLayout />}>
+        <Route path="/home" element={<RootLayout />}>
           <Route index element={<TaskDashboard />}></Route>
           <Route path="new-task" element={<NewTask />}></Route>
           <Route path="ai" element={<div />}></Route>
