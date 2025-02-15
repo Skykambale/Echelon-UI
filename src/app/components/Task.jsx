@@ -12,7 +12,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
+// Constants
 const statuses = [
   { label: "In progress", value: "inProgress" },
   { label: "Done", value: "done" },
@@ -25,6 +27,7 @@ const statusColorLabel = {
   notDone: { color: "bg-red-600", label: "Not Done" },
   todo: { color: "bg-neutral-600", label: "To do" },
 };
+
 const Task = ({ title, description, status }) => {
   const [selectedFilters, setSelectedFilters] = useState({});
   const handleDropdownChange = (dropdown, newValue) => {
@@ -73,4 +76,10 @@ const Task = ({ title, description, status }) => {
   );
 };
 
+// Proptypes
+Task.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+};
 export default Task;

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const navOptions = [
   { label: "Charts", path: "/charts" },
@@ -8,8 +9,11 @@ const navOptions = [
 
 const Navbar = () => {
   const [selectedTab, setSelectedTab] = useState("/");
+  const navigate = useNavigate();
+
   const handleNavLinkClick = (tab) => {
     setSelectedTab(tab);
+    navigate(tab);
   };
   return (
     <div className="w-full h-full flex flex-col justify-center px-3">
