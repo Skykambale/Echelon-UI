@@ -1,9 +1,11 @@
 import "./root-layout.css";
 import Navbar from "../../components/Navbar";
 import { Outlet } from "react-router-dom";
-import { SignedIn, UserButton } from "@clerk/clerk-react";
+import { SignedIn, UserButton, useUser } from "@clerk/clerk-react";
 
 const RootLayout = () => {
+  const user = useUser();
+  console.log(user);
   return (
     <SignedIn>
       <div className="root-container bg-zinc-950 text-zinc-300">

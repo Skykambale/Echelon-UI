@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const navOptions = [
-  { label: "Charts", path: "/home/charts" },
-  { label: "Tasks", path: "/home" },
-  { label: "AI", path: "/home/ai" },
+  { label: "Charts", path: "/charts" },
+  { label: "Tasks", path: "/" },
+  { label: "AI", path: "/ai" },
 ];
 
 const Navbar = () => {
