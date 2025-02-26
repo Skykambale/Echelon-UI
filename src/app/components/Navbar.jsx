@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const navOptions = [
-  { label: "Charts", path: "/charts" },
+  { label: "Visualize", path: "/visualize" },
   { label: "Tasks", path: "/" },
   { label: "AI", path: "/ai" },
 ];

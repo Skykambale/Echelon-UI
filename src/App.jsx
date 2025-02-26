@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import NewTask from "./app/components/NewTask";
 import { useUser } from "@clerk/clerk-react";
 import SignInPage from "./app/auth/signin";
+import VisualizeLayout from "./app/pages/charts/visualize-layout";
 function App() {
   // Check if user is logged in, if not redirect to login page.
   const ProtectedRoute = ({ children }) => {
@@ -32,7 +33,7 @@ function App() {
           <Route index element={<TaskDashboard />}></Route>
           <Route path="new-task" element={<NewTask />}></Route>
           <Route path="ai" element={<div />}></Route>
-          <Route path="charts" element={<div />}></Route>
+          <Route path="visualize" element={<VisualizeLayout />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
