@@ -47,17 +47,17 @@ const NewTask = ({ onClose, onSubmit }) => {
   };
 
   return (
-    <div className="w-1/2 flex flex-col gap-4">
-      <div className="border border-slate-600 rounded-md bg-[#293947]">
+    <div className="w-full flex flex-col gap-4 lg:w-1/2">
+      <div className="border border-slate-600 rounded-md bg-[#111]">
         <div>
-          <div className="p-4 flex justify-between items-center">
-            <h3>Create New Task</h3>
+          <div className="p-2 flex justify-between items-center lg:p-4">
+            <h3>Create a New Task</h3>
 
             <X onClick={handleCloseModal} className="cursor-pointer" />
           </div>
           <div className="w-full h-[.5px] bg-slate-600"></div>
 
-          <div className="p-4 h-[60vh] overflow-auto flex flex-col gap-4">
+          <div className="p-2 h-[60vh] overflow-auto flex flex-col gap-2 lg:p-4 lg:gap-4">
             {/* Inputs */}
             <Input
               className={"bg-[#222] py-6 "}

@@ -33,11 +33,11 @@ const TaskDashboard = () => {
     }
   };
   return (
-    <div className="w-100 h-full flex items-center justify-center">
+    <div className="w-100 h-full flex items-center justify-center p-2">
       {showNewTask ? (
         <NewTask onClose={() => setShowNewTask(false)} />
       ) : (
-        <div className="w-1/2 flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-4 lg:w-1/2">
           <div className="flex justify-center items-center p-2 gap-4 ">
             <Button
               size="icon"

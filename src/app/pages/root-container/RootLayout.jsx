@@ -22,7 +22,7 @@ const RootLayout = () => {
         <div className="root-content flex">
           <aside
             className={`main-side-panel ${
-              isMobileView ? "w-[12%]" : "w-[145px]"
+              isMobileView ? "w-[10%]" : "w-[145px]"
             }`}
           >
             <Navbar isMobileView={isMobileView} />
@@ -30,7 +30,7 @@ const RootLayout = () => {
 
           <main
             className={`main-content-container ${
-              isMobileView ? "w-[86%]" : "w-full"
+              isMobileView ? "w-[88%]" : "w-full"
             }`}
           >
             <Outlet />
