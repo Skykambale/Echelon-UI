@@ -79,6 +79,10 @@
   border: none;
 }
 
+.font-cursive {
+  font-family: cursive;
+}
+
 /* Webkit browsers (Chrome, Safari) */
 ::-webkit-scrollbar {
   width: 6px; /* Width of the scrollbar */
