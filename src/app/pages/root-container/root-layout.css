@@ -8,16 +8,18 @@ header {
 }
 
 .root-content {
-  height: calc(100% - 60px);
+  height: calc(100%);
 }
 .main-side-panel {
-  width: 12%;
+  width: 10%;
   height: 100%;
-  border-right: 0.5px solid #1f2937;
 }
 
 .main-content-container {
-  width: 88%;
-  height: 100%;
+  box-sizing: border-box;
+  width: 89%;
+  height: 97%;
+  margin: auto;
+  border-radius: 12px;
   background-color: #333 !important;
 }
