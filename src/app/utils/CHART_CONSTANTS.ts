@@ -71,4 +71,14 @@ export class CHART_CONSTANTS {
 			value: "Monthly",
 		},
 	];
+
+	public static readonly weekdaysInShort = [
+		"Sun",
+		"Mon",
+		"Tue",
+		"Wed",
+		"Thu",
+		"Fri",
+		"Sat",
+	];
 }
