@@ -25,7 +25,7 @@ const LineChartWrapper = () => {
 	};
 
 	return (
-		<div className="w-full h-full flex flex-col bg-[#111] gap-8 p-4 rounded-md">
+		<div className="w-full h-full flex-1 flex flex-col bg-[#111] gap-8 p-4 rounded-md mb-6">
 			<div className="flex justify-between">
 				<h3 className="text-xl font-bold text-slate-300">Productivity Status</h3>
 				<div className="flex gap-2 items-center">
