@@ -51,7 +51,27 @@ const PieChartWrapper = () => {
 				</div>
 			</div>
 			<div className="w-full h-full flex flex-col justify-between lg:flex-row">
-				<div className="w-full h-full flex justify-center items-center">
+				<div className="w-full h-full flex flex-col justify-center items-center">
+					<div className="w-full flex justify-end">
+						<Select onValueChange={(value) => handleOnDataRangeChange(value)}>
+							<SelectTrigger
+								className={`w-[110px] h-[30px] bg-[#222] border border-white text-white rounded-md`}
+							>
+								<SelectValue placeholder={selectedDataRange} />
+							</SelectTrigger>
+							<SelectContent className="bg-[#222] border border-white text-white">
+								{CHART_CONSTANTS.productivityLevels.map((item) => (
+									<SelectItem
+										value={item}
+										key={item}
+										className="hover:bg-[#333] focus:bg-[#444] text-white"
+									>
+										{item}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
 					<PieChart
 						productivityData={dailyProductivity}
 						labels={pieChartLabels}
