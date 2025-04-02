@@ -26,14 +26,14 @@ const statusColorLabel = {
   inProgress: { color: "bg-yellow-600", label: "In progress" },
   notDone: { color: "bg-red-600", label: "Not Done" },
   todo: { color: "bg-neutral-600", label: "To do" },
+  pending: {color: "bg-neutral-600", label: "Pending"},
 };
 
-const Task = ({ title, description, status }) => {
+const Task = ({ title, description, status, onStatusChange }) => {
   const [selectedFilters, setSelectedFilters] = useState({});
   const handleDropdownChange = (dropdown, newValue) => {
     setSelectedFilters({ ...selectedFilters, [dropdown]: newValue });
-    console.log(selectedFilters[dropdown]?.color);
-    console.log(selectedFilters);
+    onStatusChange(newValue);
   };
 
   useState(() => {
@@ -81,5 +81,6 @@ Task.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  onStatusChange: PropTypes.func.isRequired,
 };
 export default Task;
