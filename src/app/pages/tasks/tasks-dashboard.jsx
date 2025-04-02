@@ -83,8 +83,16 @@ const TaskDashboard = () => {
 	}
 
 	useEffect(()=> { 
-		const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
-		getTasks(dateInRequiredFormat, auth.userId);
+		if (date ){ 
+			try{ 
+				const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
+				getTasks(dateInRequiredFormat, auth.userId);
+			}
+			catch(error){
+				console.log(error)
+			}
+		}
+		
 	}, [date])
 
 	return (
