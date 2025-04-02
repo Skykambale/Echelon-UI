@@ -26,6 +26,7 @@ const statusColorLabel = {
   inProgress: { color: "bg-yellow-600", label: "In progress" },
   notDone: { color: "bg-red-600", label: "Not Done" },
   todo: { color: "bg-neutral-600", label: "To do" },
+  pending: {color: "bg-neutral-600", label: "Pending"},
 };
 
 const Task = ({ title, description, status }) => {

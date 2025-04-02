@@ -33,10 +33,23 @@ const NewTask = ({ onClose, onSubmit }) => {
 	};
 
 	const handleOnCreate = async () => {
-		console.log("API CALLL :: ", inputData);
-		setIsLoading(true);
-		await onSubmit(inputData);
-		setTimeout(() => setIsLoading(false), 3000);
+		try{ 
+			console.log("API CALLL :: ", inputData);
+			setIsLoading(true);
+			const response = await onSubmit(inputData);
+			if (response.success) { 
+				// Show success toast
+			}
+		}
+		catch(error){ 
+			console.log(error)
+			// Show error toast
+		}
+		finally{ 
+			setIsLoading(false);
+			onClose();
+		}
+		
 	};
 
 	const handleCloseModal = () => {

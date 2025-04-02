@@ -10,6 +10,7 @@ import Loading from "@/app/components/LoadingSpinner";
 
 const TaskDashboard = () => {
 	const [date, setDate] = useState(new Date());
+	const [taskList, setTaskList] = useState([]);
 	const [selectedFilters, setSelectedFilters] = useState({});
 	const [showNewTask, setShowNewTask] = useState(false);
 	const restClient = useRestSecurityClient();
@@ -32,19 +33,44 @@ const TaskDashboard = () => {
 	};
 
 	// Dumy userid and date : user_12345, 2025-03-31
-	const getTasks = async () => {
-		setIsLoading(true);
-		await restClient.get(`/tasks/?date=2025-03-31&day=""&statusOfDay=""&userId=user_12345`);
-		setIsLoading(false);
+	const getTasks = async (date="2025-04-01", userId="user123" ) => {
+		try{ 
+			if (!date || !userId) { // This will work when we remove default parameter values.
+				return;
+			}
+			setIsLoading(true);
+			const response = await restClient.get(`/tasks/?date=${date}&userId=${userId}`);
+			setTaskList(response?.result)
+		}
+		catch(error){
+			console.log(error)
+		}
+		finally{ 
+			setIsLoading(false);
+		}
 	};
 
 	const createNewTask = async (inputData) => {
-		inputData.userId = "user_12345";
-		restClient.post(`/tasks/create`, inputData);
+		try{ 
+			inputData.userId = "user123";
+			return await restClient.post(`/tasks/create`, inputData);
+		}
+		catch(error){
+			console.log(error)
+		}
+		finally{  
+			setShowNewTask(false); // Come to task list view
+			const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
+			getTasks(dateInRequiredFormat);
+		}
+		
 	};
-	useEffect(() => {
-		getTasks();
-	}, []);
+
+	useEffect(()=> { 
+		const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
+		getTasks(dateInRequiredFormat);
+	}, [date])
+
 	return (
 		<div className="w-100 h-full flex items-center justify-center p-2">
 			{isLoading && <Loading />}
@@ -93,14 +119,14 @@ const TaskDashboard = () => {
 							<div className="w-full h-[.5px] bg-slate-600"></div>
 							<div className="p-2 h-[60vh] overflow-auto">
 								{/* here will be the list of tasks */}
-								{tasks.map((task) => (
+								{Array.isArray(taskList) && taskList.length > 0 ? taskList.map((task) => (
 									<Task
-										key={task.title}
-										title={task.title}
-										description={task.description}
-										status={task.status}
+										key={task?.title}
+										title={task?.title}
+										description={task?.description}
+										status={task?.status}
 									/>
-								))}
+								)): <div className="flex justify-center items-center h-full text-slate-400"><p>No tasks available!</p></div>}
 							</div>
 							<div className="w-full h-[.5px] bg-slate-600"></div>
 							<div className="p-2 flex justify-end items-center">
@@ -121,36 +147,3 @@ const TaskDashboard = () => {
 };
 
 export default TaskDashboard;
-
-const tasks = [
-	{
-		title: "Task 1",
-		description: "Description 1",
-		status: "inProgress",
-	},
-	{
-		title: "Task 2",
-		description: "Description 2",
-		status: "done",
-	},
-	{
-		title: "Task 3",
-		description: "Description 3",
-		status: "inProgress",
-	},
-	{
-		title: "Task 4",
-		description: "Description 4",
-		status: "todo",
-	},
-	{
-		title: "Task 5",
-		description: "Description 5",
-		status: "done",
-	},
-	{
-		title: "Task 6",
-		description: "Description 6",
-		status: "inProgress",
-	},
-];
