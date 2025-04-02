@@ -5,6 +5,7 @@ import NewTask from "./app/components/NewTask";
 import { useUser } from "@clerk/clerk-react";
 import SignInPage from "./app/auth/signin";
 import VisualizeLayout from "./app/pages/charts/visualize-layout";
+import { Toaster } from "./components/ui/toaster";
 function App() {
   // Check if user is logged in, if not redirect to login page.
   const ProtectedRoute = ({ children }) => {
@@ -18,6 +19,7 @@ function App() {
   };
 
   return (
+    <>
     <BrowserRouter>
       <Routes>
         <Route path="/signin" element={<SignInPage />}></Route>
@@ -37,6 +39,8 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    <Toaster />
+    </>
   );
 }
 

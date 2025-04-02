@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import Loading from "./LoadingSpinner";
+import { useToast } from "@/hooks/use-toast";
 
 // Constants
 const categories = [
@@ -26,6 +27,7 @@ const defaultInputValues = {
 const NewTask = ({ onClose, onSubmit }) => {
 	const [inputData, setInputData] = useState(defaultInputValues);
 	const [isLoading, setIsLoading] = useState(false);
+	const {toast} = useToast();
 
 	const handleInputChange = (field, value) => {
 		setInputData({ ...inputData, [field]: value });
@@ -38,12 +40,18 @@ const NewTask = ({ onClose, onSubmit }) => {
 			setIsLoading(true);
 			const response = await onSubmit(inputData);
 			if (response.success) { 
-				// Show success toast
+				toast({
+					title: "Task created successfully",
+				  })
 			}
 		}
 		catch(error){ 
 			console.log(error)
-			// Show error toast
+			toast({
+				title: "Oops! Something went wrong while creating task",
+				description: error.message,
+				variant: "destructive"
+			  })
 		}
 		finally{ 
 			setIsLoading(false);
