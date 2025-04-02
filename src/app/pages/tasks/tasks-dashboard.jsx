@@ -66,6 +66,21 @@ const TaskDashboard = () => {
 		
 	};
 
+	const handleTaskStatusChange = async (taskId, newStatus) => {
+		//Update this once backend is ready
+		// try{ 
+		// 	const response = await restClient.put(`/tasks/${taskId}/status`, { status: newStatus });
+		// 	console.log(response)
+		// }
+		// catch(error){
+		// 	console.log(error)
+		// }
+		// finally{  
+		// 	const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
+		// 	getTasks(dateInRequiredFormat);
+		// }
+	}
+
 	useEffect(()=> { 
 		const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
 		getTasks(dateInRequiredFormat);
@@ -119,12 +134,14 @@ const TaskDashboard = () => {
 							<div className="w-full h-[.5px] bg-slate-600"></div>
 							<div className="p-2 h-[60vh] overflow-auto">
 								{/* here will be the list of tasks */}
-								{Array.isArray(taskList) && taskList.length > 0 ? taskList.map((task) => (
+								{Array.isArray(taskList) && taskList.length > 0 ? taskList.toReversed().map((task) => (
 									<Task
 										key={task?.title}
+										id={task?._id}
 										title={task?.title}
 										description={task?.description}
 										status={task?.status}
+										onStatusChange={handleTaskStatusChange}
 									/>
 								)): <div className="flex justify-center items-center h-full text-slate-400"><p>No tasks available!</p></div>}
 							</div>
