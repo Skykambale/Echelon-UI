@@ -7,6 +7,7 @@ import Task from "@/app/components/Task";
 import NewTask from "@/app/components/NewTask";
 import { useRestSecurityClient } from "@/app/hooks/securityClient";
 import Loading from "@/app/components/LoadingSpinner";
+import { useAuth } from "@clerk/clerk-react";
 
 const TaskDashboard = () => {
 	const [date, setDate] = useState(new Date());
@@ -15,6 +16,7 @@ const TaskDashboard = () => {
 	const [showNewTask, setShowNewTask] = useState(false);
 	const restClient = useRestSecurityClient();
 	const [isLoading, setIsLoading] = useState(false);
+	const auth = useAuth();
 
 	const filters = [
 		{ label: "Productive", value: "productive" },
@@ -33,7 +35,7 @@ const TaskDashboard = () => {
 	};
 
 	// Dumy userid and date : user_12345, 2025-03-31
-	const getTasks = async (date="2025-04-01", userId="user123" ) => {
+	const getTasks = async (date, userId ) => {
 		try{ 
 			if (!date || !userId) { // This will work when we remove default parameter values.
 				return;
@@ -52,16 +54,15 @@ const TaskDashboard = () => {
 
 	const createNewTask = async (inputData) => {
 		try{ 
-			inputData.userId = "user123";
+			inputData.userId = auth.userId;
 			return await restClient.post(`/tasks/create`, inputData);
 		}
 		catch(error){
 			console.log(error)
 		}
 		finally{  
-			setShowNewTask(false); // Come to task list view
 			const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
-			getTasks(dateInRequiredFormat);
+			getTasks(dateInRequiredFormat, auth.userId);
 		}
 		
 	};
@@ -83,7 +84,7 @@ const TaskDashboard = () => {
 
 	useEffect(()=> { 
 		const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
-		getTasks(dateInRequiredFormat);
+		getTasks(dateInRequiredFormat, auth.userId);
 	}, [date])
 
 	return (
