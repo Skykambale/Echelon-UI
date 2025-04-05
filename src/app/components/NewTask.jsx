@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import Loading from "./LoadingSpinner";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 // Constants
 const categories = [
@@ -27,7 +28,7 @@ const defaultInputValues = {
 const NewTask = ({ onClose, onSubmit }) => {
 	const [inputData, setInputData] = useState(defaultInputValues);
 	const [isLoading, setIsLoading] = useState(false);
-	const {toast} = useToast();
+	const { toast } = useToast();
 
 	const handleInputChange = (field, value) => {
 		setInputData({ ...inputData, [field]: value });
@@ -35,29 +36,26 @@ const NewTask = ({ onClose, onSubmit }) => {
 	};
 
 	const handleOnCreate = async () => {
-		try{ 
+		try {
 			console.log("API CALLL :: ", inputData);
 			setIsLoading(true);
 			const response = await onSubmit(inputData);
-			if (response.success) { 
+			if (response.success) {
 				toast({
 					title: "Task created successfully",
-				  })
+				});
 			}
-		}
-		catch(error){ 
-			console.log(error)
+		} catch (error) {
+			console.log(error);
 			toast({
 				title: "Oops! Something went wrong while creating task",
 				description: error.message,
-				variant: "destructive"
-			  })
-		}
-		finally{ 
+				variant: "destructive",
+			});
+		} finally {
 			setIsLoading(false);
 			onClose();
 		}
-		
 	};
 
 	const handleCloseModal = () => {
@@ -66,69 +64,112 @@ const NewTask = ({ onClose, onSubmit }) => {
 	};
 
 	return (
-		<div className="w-full flex flex-col gap-4 lg:w-1/2">
-			{isLoading && <Loading />}
-			<div className="border border-slate-600 rounded-md bg-[#111]">
-				<div>
-					<div className="p-2 flex justify-between items-center lg:p-4">
-						<h3>Create a New Task</h3>
+		<div className="absolute inset-0 z-50">
+			{/* Backdrop */}
+			<div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={handleCloseModal} />
 
-						<X onClick={handleCloseModal} className="cursor-pointer" />
+			{/* Modal Content */}
+			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] max-w-2xl mx-auto">
+				{isLoading && <Loading />}
+				<div className="bg-[#111] rounded-lg shadow-lg">
+					{/* Header */}
+					<div className="flex items-center justify-between p-3 border-b border-slate-700">
+						<h3 className="text-sm sm:text-base font-semibold text-slate-200">
+							Create a New Task
+						</h3>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={handleCloseModal}
+							className="text-slate-400 hover:text-slate-200 h-7 w-7 sm:h-8 sm:w-8"
+						>
+							<X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+						</Button>
 					</div>
-					<div className="w-full h-[.5px] bg-slate-600"></div>
 
-					<div className="p-2 h-[60vh] overflow-auto flex flex-col gap-2 lg:p-4 lg:gap-4">
-						{/* Inputs */}
-						<Input
-							className={"bg-[#222] py-6 "}
-							placeholder={"Title *"}
-							onChange={(e) => handleInputChange("title", e.target.value)}
-							value={inputData.title}
-						/>
-						<Textarea
-							className={"bg-[#222]"}
-							placeholder={"Description (optional)"}
-							rows={16}
-							value={inputData.description}
-							onChange={(e) => handleInputChange("description", e.target.value)}
-						/>
-
-						<div className="flex justify-between gap-4 w-full">
-							<Select
-								onValueChange={(value) => handleInputChange("category", value)}
-								value={inputData.category}
-								defaultValue="work"
-							>
-								<SelectTrigger className={`w-full bg-[#222] py-6 `}>
-									<SelectValue placeholder="Work" />
-								</SelectTrigger>
-								<SelectContent>
-									{categories.map((item) => (
-										<SelectItem value={item.value} key={item.value}>
-											{item.label}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-
-							<DatePicker
-								className={
-									"w-full py-6  justify-start text-left font-normal text-zinc-700 bg-[#222]"
-								}
-								date={inputData.taskDate}
-								setDate={(date) => handleInputChange("taskDate", date)}
+					{/* Form Content */}
+					<div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+						{/* Title Input */}
+						<div className="space-y-1">
+							<Label htmlFor="title" className="text-xs sm:text-sm text-slate-300">
+								Title
+							</Label>
+							<Input
+								id="title"
+								className="bg-[#222] border-none h-9 sm:h-10 text-xs sm:text-sm text-slate-200 placeholder:text-slate-500"
+								placeholder="Enter task title"
+								onChange={(e) => handleInputChange("title", e.target.value)}
+								value={inputData.title}
 							/>
+						</div>
+
+						{/* Description Input */}
+						<div className="space-y-1">
+							<Label htmlFor="description" className="text-xs sm:text-sm text-slate-300">
+								Description
+							</Label>
+							<Textarea
+								id="description"
+								className="bg-[#222] border-none text-xs sm:text-sm text-slate-200 placeholder:text-slate-500 min-h-[80px] sm:min-h-[100px]"
+								placeholder="Enter task description"
+								value={inputData.description}
+								onChange={(e) => handleInputChange("description", e.target.value)}
+							/>
+						</div>
+
+						{/* Category and Date Picker */}
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+							{/* Category Select */}
+							<div className="space-y-1">
+								<Label htmlFor="category" className="text-xs sm:text-sm text-slate-300">
+									Category
+								</Label>
+								<Select
+									onValueChange={(value) => handleInputChange("category", value)}
+									value={inputData.category}
+								>
+									<SelectTrigger
+										id="category"
+										className="bg-[#222] border-none h-9 sm:h-10 text-xs sm:text-sm text-slate-200"
+									>
+										<SelectValue placeholder="Select category" />
+									</SelectTrigger>
+									<SelectContent className="bg-[#222] border-slate-700">
+										{categories.map((item) => (
+											<SelectItem
+												value={item.value}
+												key={item.value}
+												className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
+											>
+												{item.label}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+
+							{/* Date Picker */}
+							<div className="space-y-1">
+								<Label htmlFor="date" className="text-xs sm:text-sm text-slate-300">
+									Due Date
+								</Label>
+								<DatePicker
+									id="date"
+									className="w-full h-9 sm:h-10 bg-[#222] border-none text-xs sm:text-sm text-slate-200"
+									date={inputData.taskDate}
+									setDate={(date) => handleInputChange("taskDate", date)}
+								/>
+							</div>
 						</div>
 					</div>
 
-					<div className="w-full h-[.5px] bg-slate-600"></div>
-
-					<div className="p-2 flex justify-end items-center gap-3">
-						<Button className={"bg-red-800 hover:bg-red-900"} onClick={handleCloseModal}>
-							Cancel
-						</Button>
-						<Button className={"bg-green-800 hover:bg-green-900"} onClick={handleOnCreate}>
-							Create
+					{/* Footer */}
+					<div className="flex justify-end p-3 border-t border-slate-700">
+						<Button
+							onClick={handleOnCreate}
+							className="text-xs sm:text-sm bg-green-600 hover:bg-green-700 text-white h-8 sm:h-9"
+						>
+							Create Task
 						</Button>
 					</div>
 				</div>

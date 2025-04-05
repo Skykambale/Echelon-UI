@@ -35,72 +35,64 @@ const TaskDashboard = () => {
 	};
 
 	// Dumy userid and date : user_12345, 2025-03-31
-	const getTasks = async (date, userId ) => {
-		try{ 
-			if (!date || !userId) { // This will work when we remove default parameter values.
+	const getTasks = async (date, userId) => {
+		try {
+			if (!date || !userId) {
+				// This will work when we remove default parameter values.
 				return;
 			}
 			setIsLoading(true);
 			const response = await restClient.get(`/tasks/?date=${date}&userId=${userId}`);
-			setTaskList(response?.result)
-		}
-		catch(error){
-			console.log(error)
-		}
-		finally{ 
+			setTaskList(response?.result);
+		} catch (error) {
+			console.log(error);
+		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	const createNewTask = async (inputData) => {
-		try{ 
+		try {
 			inputData.userId = auth.userId;
 			return await restClient.post(`/tasks/create`, inputData);
-		}
-		catch(error){
-			console.log(error)
-		}
-		finally{  
+		} catch (error) {
+			console.log(error);
+		} finally {
 			const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
 			getTasks(dateInRequiredFormat, auth.userId);
 		}
-		
 	};
 
 	const handleTaskStatusChange = async (taskId, newStatus) => {
 		//Update this once backend is ready
-		// try{ 
+		// try{
 		// 	const response = await restClient.put(`/tasks/${taskId}/status`, { status: newStatus });
 		// 	console.log(response)
 		// }
 		// catch(error){
 		// 	console.log(error)
 		// }
-		// finally{  
+		// finally{
 		// 	const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
 		// 	getTasks(dateInRequiredFormat);
 		// }
-	}
+	};
 
-	useEffect(()=> { 
-		if (date ){ 
-			try{ 
+	useEffect(() => {
+		if (date) {
+			try {
 				const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
 				getTasks(dateInRequiredFormat, auth.userId);
-			}
-			catch(error){
-				console.log(error)
+			} catch (error) {
+				console.log(error);
 			}
 		}
-		
-	}, [date])
+	}, [date]);
 
 	return (
-		<div className="w-100 h-full flex items-center justify-center p-2">
+		<div className="w-100 h-full flex items-center justify-center p-2 relative">
 			{isLoading && <Loading />}
-			{showNewTask ? (
-				<NewTask onClose={() => setShowNewTask(false)} onSubmit={createNewTask} />
-			) : (
+			{!showNewTask && (
 				<div className="w-full flex flex-col gap-4 lg:w-1/2">
 					<div className="flex justify-center items-center p-2 gap-4 ">
 						<Button size="icon" onClick={() => handleChangeDateByOne(date, "previous")}>
@@ -115,12 +107,16 @@ const TaskDashboard = () => {
 						<div>
 							<div className="p-2 flex justify-between items-center">
 								<Select onValueChange={(value) => handleDropdownChange("filter", value)}>
-									<SelectTrigger className="w-[150px]">
+									<SelectTrigger className="w-[150px] border-none">
 										<SelectValue placeholder="Filters" />
 									</SelectTrigger>
-									<SelectContent>
+									<SelectContent className="bg-[#222] border-slate-700">
 										{filters.map((filter) => (
-											<SelectItem value={filter.value} key={filter.value}>
+											<SelectItem
+												value={filter.value}
+												key={filter.value}
+												className="focus:bg-[#333] focus:text-slate-300"
+											>
 												{filter.label}
 											</SelectItem>
 										))}
@@ -128,12 +124,16 @@ const TaskDashboard = () => {
 								</Select>
 
 								<Select onValueChange={(value) => handleDropdownChange("statusOfDay", value)}>
-									<SelectTrigger className="w-[150px]">
+									<SelectTrigger className="w-[150px] border-none">
 										<SelectValue placeholder="Status of Day" />
 									</SelectTrigger>
-									<SelectContent>
+									<SelectContent className="bg-[#222] border-slate-700">
 										{filters.map((filter) => (
-											<SelectItem value={filter.value} key={filter.value}>
+											<SelectItem
+												value={filter.value}
+												key={filter.value}
+												className="focus:bg-[#333] focus:text-slate-300"
+											>
 												{filter.label}
 											</SelectItem>
 										))}
@@ -143,16 +143,25 @@ const TaskDashboard = () => {
 							<div className="w-full h-[.5px] bg-slate-600"></div>
 							<div className="p-2 h-[60vh] overflow-auto">
 								{/* here will be the list of tasks */}
-								{Array.isArray(taskList) && taskList.length > 0 ? taskList.toReversed().map((task) => (
-									<Task
-										key={task?.title}
-										id={task?._id}
-										title={task?.title}
-										description={task?.description}
-										status={task?.status}
-										onStatusChange={handleTaskStatusChange}
-									/>
-								)): <div className="flex justify-center items-center h-full text-slate-400"><p>No tasks available!</p></div>}
+								{Array.isArray(taskList) && taskList.length > 0 ? (
+									taskList
+										.toReversed()
+										.map((task) => (
+											<Task
+												key={task?.title}
+												id={task?._id}
+												title={task?.title}
+												description={task?.description}
+												status={task?.status}
+												onStatusChange={handleTaskStatusChange}
+												category={task?.category}
+											/>
+										))
+								) : (
+									<div className="flex justify-center items-center h-full text-slate-400">
+										<p>No tasks available!</p>
+									</div>
+								)}
 							</div>
 							<div className="w-full h-[.5px] bg-slate-600"></div>
 							<div className="p-2 flex justify-end items-center">
@@ -167,7 +176,8 @@ const TaskDashboard = () => {
 					</div>
 				</div>
 			)}
-			{/* Add New Task modal */}
+			{/* Modal Container */}
+			{showNewTask && <NewTask onClose={() => setShowNewTask(false)} onSubmit={createNewTask} />}
 		</div>
 	);
 };

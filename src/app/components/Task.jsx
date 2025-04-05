@@ -1,86 +1,196 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "../../components/ui/label";
+import { Badge } from "../../components/ui/badge";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Trash2, Edit2, Save, X } from "lucide-react";
 
 // Constants
 const statuses = [
-  { label: "In progress", value: "inProgress" },
-  { label: "Done", value: "done" },
-  { label: "Not Done", value: "notDone" },
+	{ label: "In progress", value: "inProgress" },
+	{ label: "Done", value: "done" },
+	{ label: "Not Done", value: "notDone" },
 ];
 
 const statusColorLabel = {
-  done: { color: "bg-green-600", label: "Done" },
-  inProgress: { color: "bg-yellow-600", label: "In progress" },
-  notDone: { color: "bg-red-600", label: "Not Done" },
-  todo: { color: "bg-neutral-600", label: "To do" },
-  pending: {color: "bg-neutral-600", label: "Pending"},
+	done: { color: "bg-green-600", label: "Done" },
+	inProgress: { color: "bg-yellow-600", label: "In progress" },
+	notDone: { color: "bg-red-600", label: "Not Done" },
+	todo: { color: "bg-neutral-600", label: "To do" },
+	pending: { color: "bg-neutral-600", label: "Pending" },
 };
 
-const Task = ({ title, description, status, onStatusChange }) => {
-  const [selectedFilters, setSelectedFilters] = useState({});
-  const handleDropdownChange = (dropdown, newValue) => {
-    setSelectedFilters({ ...selectedFilters, [dropdown]: newValue });
-    onStatusChange(newValue);
-  };
+const Task = ({ title, description, category, status, onStatusChange, onDelete, onUpdate }) => {
+	const [selectedFilters, setSelectedFilters] = useState({});
+	const [isEditing, setIsEditing] = useState(false);
+	const [editedTitle, setEditedTitle] = useState(title);
+	const [editedDescription, setEditedDescription] = useState(description);
 
-  useState(() => {
-    setSelectedFilters({ ...selectedFilters, statusOfTask: status });
-  }, []);
+	const handleDropdownChange = (dropdown, newValue) => {
+		setSelectedFilters({ ...selectedFilters, [dropdown]: newValue });
+		onStatusChange(newValue);
+	};
 
-  return (
-    <div className="bg-[#222] px-2 my-2 rounded">
-      <Accordion type="single" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger>
-            <div className="flex w-full items-center justify-between">
-              <p>{title}</p>
-              <Select
-                onValueChange={(value) =>
-                  handleDropdownChange("statusOfTask", value)
-                }
-              >
-                <SelectTrigger
-                  className={`w-[110px] h-[30px] ${
-                    statusColorLabel[selectedFilters?.statusOfTask]?.color
-                  }`}
-                >
-                  <SelectValue placeholder={statusColorLabel[status]?.label} />
-                </SelectTrigger>
-                <SelectContent>
-                  {statuses.map((item) => (
-                    <SelectItem value={item.value} key={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>{description}</AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </div>
-  );
+	const handleEditClick = () => {
+		setIsEditing(true);
+	};
+
+	const handleSaveClick = () => {
+		onUpdate(editedTitle, editedDescription);
+		setIsEditing(false);
+	};
+
+	const handleCancelClick = () => {
+		setEditedTitle(title);
+		setEditedDescription(description);
+		setIsEditing(false);
+	};
+
+	useEffect(() => {
+		setSelectedFilters({ ...selectedFilters, statusOfTask: status });
+	}, [status]);
+
+	return (
+		<div className="bg-[#222] px-4  my-2 rounded-lg">
+			<Accordion type="single" collapsible value={isEditing ? "item-1" : undefined}>
+				<AccordionItem value="item-1" className="border-none">
+					<AccordionTrigger className="hover:no-underline">
+						<div className="flex w-full items-center justify-between">
+							<div className="flex flex-col gap-1">
+								{isEditing ? (
+									<div className="flex flex-col gap-1 w-full">
+										<Label htmlFor="title" className="text-sm text-gray-400">
+											Title
+										</Label>
+										<Input
+											id="title"
+											value={editedTitle}
+											onChange={(e) => setEditedTitle(e.target.value)}
+											className="bg-[#333] border-input"
+										/>
+									</div>
+								) : (
+									<div className="flex flex-col gap-1">
+										<h3 className="text-md font-medium lg:text-lg">{title}</h3>
+										<Badge className="bg-purple-500/20 text-purple-300 text-xs rounded-md px-2 py-0.5 w-fit border-none">
+											{category}
+										</Badge>
+									</div>
+								)}
+							</div>
+							<Select onValueChange={(value) => handleDropdownChange("statusOfTask", value)}>
+								<SelectTrigger
+									className={`w-[110px] h-[30px] ${
+										statusColorLabel[selectedFilters?.statusOfTask]?.color
+									} border-none`}
+								>
+									<SelectValue placeholder={statusColorLabel[status]?.label} />
+								</SelectTrigger>
+								<SelectContent className="bg-[#222] border-slate-700">
+									{statuses.map((item) => (
+										<SelectItem
+											value={item.value}
+											key={item.value}
+											className="focus:bg-[#333] focus:text-slate-300"
+										>
+											{item.label}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+					</AccordionTrigger>
+					<AccordionContent>
+						<div className="flex flex-col gap-4">
+							<div className="pt-2">
+								{isEditing ? (
+									<>
+										<div className="flex flex-col gap-1">
+											<Label htmlFor="category" className="text-sm text-gray-400">
+												Category
+											</Label>
+											<Badge className="bg-purple-500/20 text-purple-300 text-xs rounded-md px-2 py-0.5 w-fit border-none">
+												{category}
+											</Badge>
+										</div>
+										<div className="flex flex-col gap-1">
+											<Label htmlFor="description" className="text-sm text-gray-400">
+												Description
+											</Label>
+											<Textarea
+												id="description"
+												value={editedDescription}
+												onChange={(e) => setEditedDescription(e.target.value)}
+												className="bg-[#333] border-input min-h-[100px]"
+											/>
+										</div>
+									</>
+								) : (
+									<p className="text-gray-300">{description}</p>
+								)}
+							</div>
+							<div className="border-t border-border/10 pt-2">
+								<div className="flex justify-end gap-2">
+									<Button
+										variant="ghost"
+										size="icon"
+										className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+										onClick={onDelete}
+									>
+										<Trash2 className="h-4 w-4" />
+									</Button>
+									{isEditing ? (
+										<>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="text-green-500 hover:text-green-600 hover:bg-green-500/10"
+												onClick={handleSaveClick}
+											>
+												<Save className="h-4 w-4" />
+											</Button>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="text-gray-500 hover:text-gray-600 hover:bg-gray-500/10"
+												onClick={handleCancelClick}
+											>
+												<X className="h-4 w-4" />
+											</Button>
+										</>
+									) : (
+										<Button
+											variant="ghost"
+											size="icon"
+											className="text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
+											onClick={handleEditClick}
+										>
+											<Edit2 className="h-4 w-4" />
+										</Button>
+									)}
+								</div>
+							</div>
+						</div>
+					</AccordionContent>
+				</AccordionItem>
+			</Accordion>
+		</div>
+	);
 };
 
 // Proptypes
 Task.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
-  onStatusChange: PropTypes.func.isRequired,
+	title: PropTypes.string.isRequired,
+	description: PropTypes.string.isRequired,
+	category: PropTypes.string.isRequired,
+	status: PropTypes.string.isRequired,
+	onStatusChange: PropTypes.func.isRequired,
+	onDelete: PropTypes.func.isRequired,
+	onUpdate: PropTypes.func.isRequired,
 };
+
 export default Task;
