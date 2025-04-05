@@ -2,13 +2,31 @@ import { CHART_CONSTANTS } from "@/app/utils/CHART_CONSTANTS";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import PieChart from "./PieChart";
+import DateList from "./DateList";
 
 const PieChartWrapper = () => {
 	const [selectedDataRange, setSelectedDataRange] = useState(CHART_CONSTANTS.dataRanges.monthly);
+	const [selectedProductivityLevel, setSelectedProductivityLevel] = useState(
+		CHART_CONSTANTS.productivityLevels[0]
+	);
 	const allowedDataRangesForLineChart = CHART_CONSTANTS.pieChartSelectDataRanges;
 	const pieChartLabels = CHART_CONSTANTS.weekdaysInShort;
 
 	const dailyProductivity = [2, 3, 4, 0, 0, 2, 15]; // Will come from an api call
+
+	// Sample data for dates - this will come from API
+	const datesData = [
+		{ id: 1, date: "2024-03-20", completedTasks: 5, totalTasks: 8 },
+		{ id: 2, date: "2024-03-19", completedTasks: 3, totalTasks: 6 },
+		{ id: 3, date: "2024-03-18", completedTasks: 7, totalTasks: 10 },
+		{ id: 4, date: "2024-03-17", completedTasks: 2, totalTasks: 4 },
+		{ id: 4, date: "2024-03-17", completedTasks: 2, totalTasks: 4 },
+		{ id: 4, date: "2024-03-17", completedTasks: 2, totalTasks: 4 },
+		{ id: 4, date: "2024-03-17", completedTasks: 2, totalTasks: 4 },
+		{ id: 4, date: "2024-03-17", completedTasks: 2, totalTasks: 4 },
+		{ id: 4, date: "2024-03-17", completedTasks: 2, totalTasks: 4 },
+		{ id: 4, date: "2024-03-17", completedTasks: 2, totalTasks: 4 },
+	];
 
 	const handleOnDataRangeChange = (value) => {
 		setSelectedDataRange(value);
@@ -18,6 +36,10 @@ const PieChartWrapper = () => {
 			// Bring data from api and set it, we don't need a ifelse here, let api service handle it. it will return us the xAxisLabels and productivityLevelInNumbers
 			// we will just set them
 		}
+	};
+
+	const handleProductivityLevelChange = (value) => {
+		setSelectedProductivityLevel(value);
 	};
 
 	const handleOnPieClick = (index) => {
@@ -50,14 +72,14 @@ const PieChartWrapper = () => {
 					</Select>
 				</div>
 			</div>
-			<div className="w-full h-full flex flex-col justify-between lg:flex-row">
-				<div className="w-full h-full flex flex-col justify-center items-center">
+			<div className="w-full h-[90%] flex flex-col justify-between lg:flex-row gap-4">
+				<div className="w-full lg:w-[60%] h-full lg:h-full flex flex-col justify-center items-center">
 					<div className="w-full flex justify-end">
-						<Select onValueChange={(value) => handleOnDataRangeChange(value)}>
+						<Select onValueChange={(value) => handleProductivityLevelChange(value)}>
 							<SelectTrigger
 								className={`w-[110px] h-[30px] bg-[#222] border border-white text-white rounded-md`}
 							>
-								<SelectValue placeholder={selectedDataRange} />
+								<SelectValue placeholder={selectedProductivityLevel} />
 							</SelectTrigger>
 							<SelectContent className="bg-[#222] border border-white text-white">
 								{CHART_CONSTANTS.productivityLevels.map((item) => (
@@ -78,7 +100,9 @@ const PieChartWrapper = () => {
 						onPieClick={handleOnPieClick}
 					/>
 				</div>
-				<div className="w-full h-full">content</div>
+				<div className="w-full lg:w-[40%] h-full lg:h-full">
+					<DateList dates={datesData} />
+				</div>
 			</div>
 		</div>
 	);
