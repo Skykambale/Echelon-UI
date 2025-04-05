@@ -6,42 +6,43 @@ import { useUser } from "@clerk/clerk-react";
 import SignInPage from "./app/auth/signin";
 import VisualizeLayout from "./app/pages/charts/visualize-layout";
 import { Toaster } from "./components/ui/toaster";
+import AIPage from "./app/pages/ai";
 function App() {
-  // Check if user is logged in, if not redirect to login page.
-  const ProtectedRoute = ({ children }) => {
-    const { isSignedIn, isLoaded } = useUser();
+	// Check if user is logged in, if not redirect to login page.
+	const ProtectedRoute = ({ children }) => {
+		const { isSignedIn, isLoaded } = useUser();
 
-    if (isLoaded && !isSignedIn) {
-      return <Navigate to="/signin" />;
-    }
+		if (isLoaded && !isSignedIn) {
+			return <Navigate to="/signin" />;
+		}
 
-    return children;
-  };
+		return children;
+	};
 
-  return (
-    <>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/signin" element={<SignInPage />}></Route>
+	return (
+		<>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/signin" element={<SignInPage />}></Route>
 
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <RootLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<TaskDashboard />}></Route>
-          <Route path="new-task" element={<NewTask />}></Route>
-          <Route path="ai" element={<div />}></Route>
-          <Route path="visualize" element={<VisualizeLayout />}></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-    <Toaster />
-    </>
-  );
+					<Route
+						path="/"
+						element={
+							<ProtectedRoute>
+								<RootLayout />
+							</ProtectedRoute>
+						}
+					>
+						<Route index element={<TaskDashboard />}></Route>
+						<Route path="new-task" element={<NewTask />}></Route>
+						<Route path="ai" element={<AIPage />}></Route>
+						<Route path="visualize" element={<VisualizeLayout />}></Route>
+					</Route>
+				</Routes>
+			</BrowserRouter>
+			<Toaster />
+		</>
+	);
 }
 
 export default App;

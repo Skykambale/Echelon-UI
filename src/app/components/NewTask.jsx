@@ -66,7 +66,7 @@ const NewTask = ({ onClose, onSubmit }) => {
 	return (
 		<div className="absolute inset-0 z-50">
 			{/* Backdrop */}
-			<div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleCloseModal} />
+			<div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={handleCloseModal} />
 
 			{/* Modal Content */}
 			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] max-w-2xl mx-auto">
