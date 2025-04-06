@@ -32,12 +32,14 @@ const NewTask = ({ onClose, onSubmit }) => {
 
 	const handleInputChange = (field, value) => {
 		setInputData({ ...inputData, [field]: value });
-		console.log(field, value);
 	};
 
 	const handleOnCreate = async () => {
 		try {
-			console.log("API CALLL :: ", inputData);
+			// Validate input data.
+			if (!inputData.title || !inputData.description || !inputData.category || !inputData.taskDate) {
+				throw new Error("All fields are required");
+			}
 			setIsLoading(true);
 			const response = await onSubmit(inputData);
 			if (response.success) {
