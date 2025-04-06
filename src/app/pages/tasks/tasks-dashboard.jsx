@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 const TaskDashboard = () => {
 	const [date, setDate] = useState(new Date());
 	const [taskList, setTaskList] = useState([]);
+	const [statusOfDay, setStatusOfDay] = useState("");
 	const [selectedFilters, setSelectedFilters] = useState({});
 	const [showNewTask, setShowNewTask] = useState(false);
 	const restClient = useRestSecurityClient();
@@ -23,6 +24,7 @@ const TaskDashboard = () => {
 
 	const handleDropdownChange = (dropdown, newValue) => {
 		setSelectedFilters({ ...selectedFilters, [dropdown]: newValue });
+		handleDayUpdate(newValue);
 	};
 	const handleChangeDateByOne = (date, type) => {
 		if (type === "next") {
@@ -41,7 +43,8 @@ const TaskDashboard = () => {
 			}
 			setIsLoading(true);
 			const response = await restClient.get(`/tasks/?date=${date}&userId=${userId}`);
-			setTaskList(response?.result);
+			setTaskList(response?.result?.tasks || []);
+			setStatusOfDay(response?.result?.statusOfDay);
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -49,6 +52,14 @@ const TaskDashboard = () => {
 				setIsLoading(false);
 			}, 2000);
 		}
+	};
+
+	const productivityLevels = {
+		0: "Idle",
+		1: "Improving",
+		2: "Moderate",
+		3: "Efficient",
+		4: "Peak",
 	};
 
 	const createNewTask = async (inputData) => {
@@ -105,6 +116,29 @@ const TaskDashboard = () => {
 		}
 	};
 
+	const handleDayUpdate = async (status) => {
+		try {
+			const requestBody = {
+				date: date,
+				userId: auth.userId,
+				statusOfDay: status,
+			};
+			setIsLoading(true);
+			await restClient.put(`/day`, requestBody);
+			toast({ title: "Updated the status successfully" });
+		} catch (error) {
+			toast({
+				title: "Oops! Something went wrong while deleting the task",
+				description: error.message,
+				variant: "destructive",
+			});
+		} finally {
+			// const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
+			// await getTasks(dateInRequiredFormat, auth.userId);
+			setIsLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		if (date) {
 			try {
@@ -152,7 +186,7 @@ const TaskDashboard = () => {
 
 								<Select onValueChange={(value) => handleDropdownChange("statusOfDay", value)}>
 									<SelectTrigger className="w-[150px] border-none bg-[#222]">
-										<SelectValue placeholder="Status of Day" />
+										<SelectValue placeholder={productivityLevels[statusOfDay || 0]} />
 									</SelectTrigger>
 									<SelectContent className="bg-[#222] border-slate-700">
 										{GLOBAL_CONSTANTS.productivityLevels.map((item) => (
