@@ -24,7 +24,7 @@ const statusColorLabel = {
 	pending: { color: "bg-neutral-600", label: "Pending" },
 };
 
-const Task = ({ title, description, category, status, onStatusChange, onDelete, onUpdate }) => {
+const Task = ({ id, title, description, category, status, onTaskUpdate, onDelete }) => {
 	const [selectedFilters, setSelectedFilters] = useState({});
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedTitle, setEditedTitle] = useState(title);
@@ -32,15 +32,19 @@ const Task = ({ title, description, category, status, onStatusChange, onDelete, 
 
 	const handleDropdownChange = (dropdown, newValue) => {
 		setSelectedFilters({ ...selectedFilters, [dropdown]: newValue });
-		onStatusChange(newValue);
+		onTaskUpdate(id, { status: newValue });
 	};
 
 	const handleEditClick = () => {
 		setIsEditing(true);
 	};
 
-	const handleSaveClick = () => {
-		onUpdate(editedTitle, editedDescription);
+	const handleSaveClick = async () => {
+		const updatedData = {
+			title: editedTitle,
+			description: editedDescription,
+		};
+		await onTaskUpdate(id, updatedData);
 		setIsEditing(false);
 	};
 
@@ -48,6 +52,10 @@ const Task = ({ title, description, category, status, onStatusChange, onDelete, 
 		setEditedTitle(title);
 		setEditedDescription(description);
 		setIsEditing(false);
+	};
+
+	const handleDeleteClick = () => {
+		onDelete(id);
 	};
 
 	useEffect(() => {
@@ -60,7 +68,7 @@ const Task = ({ title, description, category, status, onStatusChange, onDelete, 
 				<AccordionItem value="item-1" className="border-none">
 					<AccordionTrigger className="hover:no-underline">
 						<div className="flex w-full items-center justify-between">
-							<div className="flex flex-col gap-1">
+							<div className="flex flex-col gap-1 w-full">
 								{isEditing ? (
 									<div className="flex flex-col gap-1 w-full">
 										<Label htmlFor="title" className="text-sm text-gray-400">
@@ -70,7 +78,7 @@ const Task = ({ title, description, category, status, onStatusChange, onDelete, 
 											id="title"
 											value={editedTitle}
 											onChange={(e) => setEditedTitle(e.target.value)}
-											className="bg-[#333] border-input"
+											className="bg-[#333] border-none w-full "
 										/>
 									</div>
 								) : (
@@ -82,31 +90,35 @@ const Task = ({ title, description, category, status, onStatusChange, onDelete, 
 									</div>
 								)}
 							</div>
-							<Select onValueChange={(value) => handleDropdownChange("statusOfTask", value)}>
-								<SelectTrigger
-									className={`w-[110px] h-[30px] ${
-										statusColorLabel[selectedFilters?.statusOfTask]?.color
-									} border-none`}
+							{!isEditing && (
+								<Select
+									onValueChange={(value) => handleDropdownChange("statusOfTask", value)}
 								>
-									<SelectValue placeholder={statusColorLabel[status]?.label} />
-								</SelectTrigger>
-								<SelectContent className="bg-[#222] border-slate-700">
-									{statuses.map((item) => (
-										<SelectItem
-											value={item.value}
-											key={item.value}
-											className="focus:bg-[#333] focus:text-slate-300"
-										>
-											{item.label}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+									<SelectTrigger
+										className={`w-[110px] h-[30px] ${
+											statusColorLabel[selectedFilters?.statusOfTask]?.color
+										} border-none`}
+									>
+										<SelectValue placeholder={statusColorLabel[status]?.label} />
+									</SelectTrigger>
+									<SelectContent className="bg-[#222] border-slate-700">
+										{statuses.map((item) => (
+											<SelectItem
+												value={item.value}
+												key={item.value}
+												className="text-white focus:bg-[#333] focus:text-slate-300"
+											>
+												{item.label}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							)}
 						</div>
 					</AccordionTrigger>
 					<AccordionContent>
 						<div className="flex flex-col gap-4">
-							<div className="pt-2">
+							<div className="flex flex-col gap-3">
 								{isEditing ? (
 									<>
 										<div className="flex flex-col gap-1">
@@ -125,7 +137,7 @@ const Task = ({ title, description, category, status, onStatusChange, onDelete, 
 												id="description"
 												value={editedDescription}
 												onChange={(e) => setEditedDescription(e.target.value)}
-												className="bg-[#333] border-input min-h-[100px]"
+												className="bg-[#333] border-input border-none min-h-[100px]"
 											/>
 										</div>
 									</>
@@ -139,7 +151,7 @@ const Task = ({ title, description, category, status, onStatusChange, onDelete, 
 										variant="ghost"
 										size="icon"
 										className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
-										onClick={onDelete}
+										onClick={handleDeleteClick}
 									>
 										<Trash2 className="h-4 w-4" />
 									</Button>
@@ -184,13 +196,13 @@ const Task = ({ title, description, category, status, onStatusChange, onDelete, 
 
 // Proptypes
 Task.propTypes = {
+	id: PropTypes.string.isRequired,
 	title: PropTypes.string.isRequired,
 	description: PropTypes.string.isRequired,
 	category: PropTypes.string.isRequired,
 	status: PropTypes.string.isRequired,
-	onStatusChange: PropTypes.func.isRequired,
+	onTaskUpdate: PropTypes.func.isRequired,
 	onDelete: PropTypes.func.isRequired,
-	onUpdate: PropTypes.func.isRequired,
 };
 
 export default Task;

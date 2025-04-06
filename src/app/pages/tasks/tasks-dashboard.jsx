@@ -8,6 +8,8 @@ import NewTask from "@/app/components/NewTask";
 import { useRestSecurityClient } from "@/app/hooks/securityClient";
 import Loading from "@/app/components/LoadingSpinner";
 import { useAuth } from "@clerk/clerk-react";
+import { GLOBAL_CONSTANTS } from "@/app/utils/GLOBAL_CONSTANTS";
+import { useToast } from "@/hooks/use-toast";
 
 const TaskDashboard = () => {
 	const [date, setDate] = useState(new Date());
@@ -17,11 +19,7 @@ const TaskDashboard = () => {
 	const restClient = useRestSecurityClient();
 	const [isLoading, setIsLoading] = useState(false);
 	const auth = useAuth();
-
-	const filters = [
-		{ label: "Productive", value: "productive" },
-		{ label: "Super Productive", value: "super productive" },
-	];
+	const { toast } = useToast();
 
 	const handleDropdownChange = (dropdown, newValue) => {
 		setSelectedFilters({ ...selectedFilters, [dropdown]: newValue });
@@ -63,19 +61,46 @@ const TaskDashboard = () => {
 		}
 	};
 
-	const handleTaskStatusChange = async (taskId, newStatus) => {
-		//Update this once backend is ready
-		// try{
-		// 	const response = await restClient.put(`/tasks/${taskId}/status`, { status: newStatus });
-		// 	console.log(response)
-		// }
-		// catch(error){
-		// 	console.log(error)
-		// }
-		// finally{
-		// 	const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
-		// 	getTasks(dateInRequiredFormat);
-		// }
+	const handleTaskUpdate = async (taskId, updatedData) => {
+		// If error show toast, do nothing on successfull response.
+		try {
+			if (!taskId || !updatedData) {
+				throw new Error("Task Id or updated data is missing");
+			}
+			setIsLoading(true);
+			await restClient.put(`/tasks/update`, { taskId, updatedData });
+		} catch (error) {
+			toast({
+				title: "Oops! Something went wrong while updating the task data",
+				description: error.message,
+				variant: "destructive",
+			});
+		} finally {
+			const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
+			await getTasks(dateInRequiredFormat, auth.userId);
+			setIsLoading(false);
+		}
+	};
+
+	const handleTaskDelete = async (taskId) => {
+		try {
+			if (!taskId) {
+				throw new Error("Task Id is missing");
+			}
+			setIsLoading(true);
+			await restClient.delete(`/tasks/delete?taskId=${taskId}`);
+			toast({ title: "Deleted the task successfully" });
+		} catch (error) {
+			toast({
+				title: "Oops! Something went wrong while deleting the task",
+				description: error.message,
+				variant: "destructive",
+			});
+		} finally {
+			const dateInRequiredFormat = new Date(date).toISOString().split("T")[0];
+			await getTasks(dateInRequiredFormat, auth.userId);
+			setIsLoading(false);
+		}
 	};
 
 	useEffect(() => {
@@ -105,8 +130,8 @@ const TaskDashboard = () => {
 					</div>
 					<div className="border border-slate-600 rounded bg-[#111]">
 						<div>
-							<div className="p-2 flex justify-between items-center">
-								<Select onValueChange={(value) => handleDropdownChange("filter", value)}>
+							<div className="p-2 flex justify-end items-center">
+								{/* <Select onValueChange={(value) => handleDropdownChange("filter", value)}>
 									<SelectTrigger className="w-[150px] border-none">
 										<SelectValue placeholder="Filters" />
 									</SelectTrigger>
@@ -121,20 +146,20 @@ const TaskDashboard = () => {
 											</SelectItem>
 										))}
 									</SelectContent>
-								</Select>
+								</Select> */}
 
 								<Select onValueChange={(value) => handleDropdownChange("statusOfDay", value)}>
-									<SelectTrigger className="w-[150px] border-none">
+									<SelectTrigger className="w-[150px] border-none bg-[#222]">
 										<SelectValue placeholder="Status of Day" />
 									</SelectTrigger>
 									<SelectContent className="bg-[#222] border-slate-700">
-										{filters.map((filter) => (
+										{GLOBAL_CONSTANTS.productivityLevels.map((item) => (
 											<SelectItem
-												value={filter.value}
-												key={filter.value}
-												className="focus:bg-[#333] focus:text-slate-300"
+												value={item.value}
+												key={item.value}
+												className="text-white focus:bg-[#333] focus:text-slate-300"
 											>
-												{filter.label}
+												{item.label}
 											</SelectItem>
 										))}
 									</SelectContent>
@@ -153,8 +178,9 @@ const TaskDashboard = () => {
 												title={task?.title}
 												description={task?.description}
 												status={task?.status}
-												onStatusChange={handleTaskStatusChange}
 												category={task?.category}
+												onTaskUpdate={handleTaskUpdate}
+												onDelete={handleTaskDelete}
 											/>
 										))
 								) : (
