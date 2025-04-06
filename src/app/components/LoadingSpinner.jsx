@@ -1,6 +1,6 @@
 const Loading = () => {
 	return (
-		<div className="w-screen h-screen absolute top-0 left-0 flex bg-[rgba(17,17,17,0.55)] items-center  p-6 border border-gray-100 dark:bg-gray-800 dark:border-gray-800 dark:hover:bg-gray-700">
+		<div className="w-full h-full absolute top-0 left-0 flex bg-[rgba(17,17,17,0.55)] items-center  p-6  dark:bg-gray-800 dark:border-gray-800 dark:hover:bg-gray-700">
 			<div role="status" className="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
 				<svg
 					aria-hidden="true"
