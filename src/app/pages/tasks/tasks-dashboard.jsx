@@ -19,6 +19,7 @@ const TaskDashboard = () => {
 	const [showNewTask, setShowNewTask] = useState(false);
 	const restClient = useRestSecurityClient();
 	const [isLoading, setIsLoading] = useState(false);
+	const [quote, setQuote] = useState("");
 	const auth = useAuth();
 	const { toast } = useToast();
 
@@ -139,6 +140,15 @@ const TaskDashboard = () => {
 		}
 	};
 
+	const getQuote = async () => {
+		try {
+			const response = await restClient.get(`/quote`);
+			console.log(response);
+			setQuote(response?.quote || "");
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	useEffect(() => {
 		if (date) {
 			try {
@@ -149,6 +159,10 @@ const TaskDashboard = () => {
 			}
 		}
 	}, [date]);
+
+	useEffect(() => {
+		getQuote();
+	}, []);
 
 	return (
 		<div className="w-100 h-full flex items-center justify-center p-2 relative">
@@ -234,6 +248,15 @@ const TaskDashboard = () => {
 									Add new Task
 								</Button>
 							</div>
+						</div>
+					</div>
+
+					{/* Quotes */}
+					<div className="text-sm mt-4 w-full  mx-auto">
+						<div className="border border-slate-700/50 rounded-lg bg-[#111]/50 backdrop-blur-sm p-3 shadow-lg">
+							<p className="text-center text-sm italic text-slate-300 leading-relaxed">
+								&ldquo;{quote}&rdquo;
+							</p>
 						</div>
 					</div>
 				</div>
