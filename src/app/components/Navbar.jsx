@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BsStars } from "react-icons/bs";
 import { FaChartSimple } from "react-icons/fa6";
-import { FaTasks } from "react-icons/fa";
-import { UserButton } from "@clerk/clerk-react";
+import { FaTasks, FaFire } from "react-icons/fa";
+import { useAuth, UserButton } from "@clerk/clerk-react";
 import PropTypes from "prop-types";
-
+import { useRestSecurityClient } from "@/app/hooks/securityClient";
 const navOptions = [
 	{ label: "Visualize", path: "/visualize", icon: <FaChartSimple size={24} /> },
 	{ label: "Tasks", path: "/", icon: <FaTasks /> },
@@ -14,12 +14,25 @@ const navOptions = [
 
 const Navbar = ({ isMobileView }) => {
 	const [selectedTab, setSelectedTab] = useState("/");
+	const [streak, setStreak] = useState(0);
+	const restClient = useRestSecurityClient();
 	const navigate = useNavigate();
+	const auth = useAuth();
 
 	const handleNavLinkClick = (tab) => {
 		setSelectedTab(tab);
 		navigate(tab);
 	};
+
+	const getStreak = async () => {
+		const userId = auth.userId;
+		const response = await restClient.get("/day/streak?userId=" + userId);
+		setStreak(response?.result?.streak || 0);
+	};
+
+	useEffect(() => {
+		getStreak();
+	}, []);
 
 	return (
 		<div className="h-full flex flex-col justify-between py-4">
@@ -51,7 +64,11 @@ const Navbar = ({ isMobileView }) => {
 			</div>
 
 			{/* User button */}
-			<div className="px-1 ">
+			<div className="px-1 flex flex-col items-start gap-6">
+				<div className="flex flex-col lg:flex-row items-center gap-2">
+					<FaFire className="text-red-500 " size={26} />
+					<span>{streak}</span>
+				</div>
 				<UserButton />
 			</div>
 		</div>
