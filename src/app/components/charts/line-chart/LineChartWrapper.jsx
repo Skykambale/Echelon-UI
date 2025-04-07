@@ -2,10 +2,12 @@ import { CHART_CONSTANTS } from "@/app/utils/CHART_CONSTANTS";
 import LineChart from "./LineChart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
+import { useAuth } from "@clerk/clerk-react";
 
 const LineChartWrapper = () => {
 	const [selectedDataRange, setSelectedDataRange] = useState(CHART_CONSTANTS.dataRanges.weekly);
 	const allowedDataRangesForLineChart = CHART_CONSTANTS.lineChartSelectDataRanges;
+	// const auth = useAuth();
 
 	const productivityLevels = CHART_CONSTANTS.productivityLevels;
 
@@ -23,6 +25,20 @@ const LineChartWrapper = () => {
 			setXAxisLabels(dummyMonthData);
 		}
 	};
+
+	// const getLineChartData = async (dataRange) => {
+	// 	try {
+	// 		const userId = auth.userId;
+
+	// 		let range = "";
+	// 		if (dataRange === CHART_CONSTANTS.dataRanges.weekly) {
+	// 		} else {
+	// 		}
+	// 		console.log();
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// };
 
 	return (
 		<div className="w-full h-full flex-1 flex flex-col bg-[#111] gap-8 p-4 rounded-md mb-6">

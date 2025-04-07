@@ -1,14 +1,18 @@
 import { CHART_CONSTANTS } from "@/app/utils/CHART_CONSTANTS";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PieChart from "./PieChart";
 import DateList from "./DateList";
+import { useRestSecurityClient } from "@/app/hooks/securityClient";
+import { useAuth } from "@clerk/clerk-react";
 
 const PieChartWrapper = () => {
 	const [selectedDataRange, setSelectedDataRange] = useState(CHART_CONSTANTS.dataRanges.monthly);
 	const [selectedDayData, setSelectedDayData] = useState(null);
 	const allowedDataRangesForLineChart = CHART_CONSTANTS.pieChartSelectDataRanges;
 	const pieChartLabels = CHART_CONSTANTS.weekdaysInShort;
+	const restClient = useRestSecurityClient();
+	const auth = useAuth();
 
 	const dailyProductivity = [2, 3, 4, 0, 0, 2, 15]; // Will come from an api call
 
@@ -50,6 +54,14 @@ const PieChartWrapper = () => {
 		}
 	};
 
+	const getPieData = async () => {
+		const userId = auth.userId;
+		const response = await restClient.get(
+			`/day/productivity/status/pie-chart?startDate=2025-04-01&endDate=2025-04-30&statusOfDay=3&userId=${userId}`
+		);
+
+		console.log("PIE DATA :: " + response);
+	};
 	const handleOnPieClick = async (index) => {
 		const selectedDay = pieChartLabels[index];
 		const dayData = await fetchDayData(selectedDay);
@@ -58,6 +70,10 @@ const PieChartWrapper = () => {
 			tasks: dayData,
 		});
 	};
+
+	useEffect(() => {
+		getPieData();
+	}, []);
 
 	return (
 		<div className="w-full h-full flex-1 flex flex-col bg-[#111] gap-8 p-4 rounded-md">
@@ -92,7 +108,7 @@ const PieChartWrapper = () => {
 							<SelectTrigger
 								className={`w-[110px] h-[30px] bg-[#222] border border-white text-white rounded-md`}
 							>
-								<SelectValue placeholder={selectedDataRange} />
+								<SelectValue placeholder={"Productivity Status"} />
 							</SelectTrigger>
 							<SelectContent className="bg-[#222] border border-white text-white">
 								{CHART_CONSTANTS.productivityLevels.map((item) => (
