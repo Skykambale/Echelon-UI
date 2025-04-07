@@ -71,19 +71,19 @@ const Task = ({ id, title, description, category, status, onTaskUpdate, onDelete
 							<div className="flex flex-col gap-1 w-full">
 								{isEditing ? (
 									<div className="flex flex-col gap-1 w-full">
-										<Label htmlFor="title" className="text-sm text-gray-400">
+										<Label htmlFor="title" className="text-xs text-gray-400">
 											Title
 										</Label>
 										<Input
 											id="title"
 											value={editedTitle}
 											onChange={(e) => setEditedTitle(e.target.value)}
-											className="bg-[#333] border-none w-full "
+											className="bg-[#181818] border-none w-full "
 										/>
 									</div>
 								) : (
 									<div className="flex flex-col gap-1">
-										<h3 className="text-md font-medium lg:text-lg">{title}</h3>
+										<h3 className="text-sm font-medium lg:text-md">{title}</h3>
 										<Badge className="bg-purple-500/20 text-purple-300 text-xs rounded-md px-2 py-0.5 w-fit border-none">
 											{category}
 										</Badge>
@@ -97,7 +97,7 @@ const Task = ({ id, title, description, category, status, onTaskUpdate, onDelete
 									<SelectTrigger
 										className={`w-[110px] h-[30px] ${
 											statusColorLabel[selectedFilters?.statusOfTask]?.color
-										} border-none`}
+										} border-none text-xs`}
 									>
 										<SelectValue placeholder={statusColorLabel[status]?.label} />
 									</SelectTrigger>
@@ -122,7 +122,7 @@ const Task = ({ id, title, description, category, status, onTaskUpdate, onDelete
 								{isEditing ? (
 									<>
 										<div className="flex flex-col gap-1">
-											<Label htmlFor="category" className="text-sm text-gray-400">
+											<Label htmlFor="category" className="text-xs text-gray-400">
 												Category
 											</Label>
 											<Badge className="bg-purple-500/20 text-purple-300 text-xs rounded-md px-2 py-0.5 w-fit border-none">
@@ -130,19 +130,19 @@ const Task = ({ id, title, description, category, status, onTaskUpdate, onDelete
 											</Badge>
 										</div>
 										<div className="flex flex-col gap-1">
-											<Label htmlFor="description" className="text-sm text-gray-400">
+											<Label htmlFor="description" className="text-xs text-gray-400">
 												Description
 											</Label>
 											<Textarea
 												id="description"
 												value={editedDescription}
 												onChange={(e) => setEditedDescription(e.target.value)}
-												className="bg-[#333] border-input border-none min-h-[100px]"
+												className="bg-[#181818] border-input border-none min-h-[100px]"
 											/>
 										</div>
 									</>
 								) : (
-									<p className="text-gray-300">{description}</p>
+									<p className="text-sm text-gray-300">{description}</p>
 								)}
 							</div>
 							<div className="border-t border-border/10 pt-2">

@@ -2,7 +2,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft, Plus, Sparkles } from "lucide-react";
 import Task from "@/app/components/Task";
 import NewTask from "@/app/components/NewTask";
 import { useRestSecurityClient } from "@/app/hooks/securityClient";
@@ -165,98 +165,100 @@ const TaskDashboard = () => {
 	}, []);
 
 	return (
-		<div className="w-100 h-full flex items-center justify-center p-2 relative">
+		<div className="w-full h-full p-4 relative">
 			{isLoading && <Loading />}
 			{!showNewTask && (
-				<div className="w-full flex flex-col gap-4 lg:w-1/2">
-					<div className="flex justify-center items-center p-2 gap-4 ">
-						<Button size="icon" onClick={() => handleChangeDateByOne(date, "previous")}>
-							<ChevronLeft />
-						</Button>
-						<DatePicker date={date} setDate={setDate} />
-						<Button size="icon" onClick={() => handleChangeDateByOne(date, "next")}>
-							<ChevronRight />
-						</Button>
-					</div>
-					<div className="border border-slate-600 rounded bg-[#111]">
-						<div>
-							<div className="p-2 flex justify-end items-center">
-								{/* <Select onValueChange={(value) => handleDropdownChange("filter", value)}>
-									<SelectTrigger className="w-[150px] border-none">
-										<SelectValue placeholder="Filters" />
-									</SelectTrigger>
-									<SelectContent className="bg-[#222] border-slate-700">
-										{filters.map((filter) => (
-											<SelectItem
-												value={filter.value}
-												key={filter.value}
-												className="focus:bg-[#333] focus:text-slate-300"
-											>
-												{filter.label}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select> */}
+				<div className="w-full h-full flex flex-col gap-4">
+					{/* Header Section */}
 
-								<Select onValueChange={(value) => handleDropdownChange("statusOfDay", value)}>
-									<SelectTrigger className="w-[150px] border-none bg-[#222]">
-										<SelectValue placeholder={productivityLevels[statusOfDay || 0]} />
-									</SelectTrigger>
-									<SelectContent className="bg-[#222] border-slate-700">
-										{GLOBAL_CONSTANTS.productivityLevels.map((item) => (
-											<SelectItem
-												value={item.value}
-												key={item.value}
-												className="text-white focus:bg-[#333] focus:text-slate-300"
-											>
-												{item.label}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="w-full h-[.5px] bg-slate-600"></div>
-							<div className="p-2 h-[60vh] overflow-auto">
-								{/* here will be the list of tasks */}
-								{Array.isArray(taskList) && taskList.length > 0 ? (
-									taskList
-										.toReversed()
-										.map((task) => (
-											<Task
-												key={task?.title}
-												id={task?._id}
-												title={task?.title}
-												description={task?.description}
-												status={task?.status}
-												category={task?.category}
-												onTaskUpdate={handleTaskUpdate}
-												onDelete={handleTaskDelete}
-											/>
-										))
-								) : (
-									<div className="flex justify-center items-center h-full text-slate-400">
-										<p>No tasks available!</p>
-									</div>
-								)}
-							</div>
-							<div className="w-full h-[.5px] bg-slate-600"></div>
-							<div className="p-2 flex justify-end items-center">
-								<Button
-									className={"bg-sky-600 hover:bg-sky-700"}
-									onClick={() => setShowNewTask(true)}
-								>
-									Add new Task
-								</Button>
-							</div>
+					<div className="flex items-center justify-between gap-4 border-b-[1px] border-slate-500 pb-4">
+						<h1 className="hidden lg:block text-xl font-medium text-slate-200">
+							Tasks Dashboard
+						</h1>
+
+						<div className="flex items-center gap-2 w-[100px] lg:w-fit">
+							<Button
+								variant="ghost"
+								size="icon"
+								className="hover:bg-[#222] hover:text-white"
+								onClick={() => handleChangeDateByOne(date, "previous")}
+							>
+								<ChevronLeft className="h-5 w-5" />
+							</Button>
+							<DatePicker date={date} setDate={setDate} />
+							<Button
+								variant="ghost"
+								size="icon"
+								className="hover:bg-[#222] hover:text-white"
+								onClick={() => handleChangeDateByOne(date, "next")}
+							>
+								<ChevronRight className="h-5 w-5" />
+							</Button>
 						</div>
+
+						<Button
+							className="bg-sky-600 hover:bg-sky-700 w-[100px] lg:w-fit"
+							onClick={() => setShowNewTask(true)}
+						>
+							<Plus className="h-5 w-5" />
+							<span className="hidden  lg:block">Add new Task</span>
+							<span className="text-xs lg:text-base lg:hidden">New Task</span>
+						</Button>
 					</div>
 
-					{/* Quotes */}
-					<div className="text-sm mt-4 w-full  mx-auto">
-						<div className="border border-slate-700/50 rounded-lg bg-[#111]/50 backdrop-blur-sm p-3 shadow-lg">
-							<p className="text-center text-sm italic text-slate-300 leading-relaxed">
-								&ldquo;{quote}&rdquo;
-							</p>
+					{/* Status Section */}
+					<div className="flex ">
+						<Select onValueChange={(value) => handleDropdownChange("statusOfDay", value)}>
+							<SelectTrigger className="w-[150px] bg-[#222] border-slate-700">
+								<SelectValue placeholder={productivityLevels[statusOfDay || 0]} />
+							</SelectTrigger>
+							<SelectContent className="bg-[#222] border-slate-700">
+								{GLOBAL_CONSTANTS.productivityLevels.map((item) => (
+									<SelectItem
+										value={item.value}
+										key={item.value}
+										className="text-white focus:bg-[#333] focus:text-slate-300"
+									>
+										{item.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+
+					{/* Tasks Section */}
+					<div className="w-full h-full flex flex-col justify-between overflow-hidden">
+						<div className="flex-1 overflow-auto min-h-[60vh] max-h-[70vh]">
+							{Array.isArray(taskList) && taskList.length > 0 ? (
+								<div className="space-y-3">
+									{taskList.toReversed().map((task) => (
+										<Task
+											key={task?.title}
+											id={task?._id}
+											title={task?.title}
+											description={task?.description}
+											status={task?.status}
+											category={task?.category}
+											onTaskUpdate={handleTaskUpdate}
+											onDelete={handleTaskDelete}
+										/>
+									))}
+								</div>
+							) : (
+								<div className="flex justify-center items-center h-[60vh] text-slate-400">
+									<p>No tasks available!</p>
+								</div>
+							)}
+						</div>
+
+						{/* Quotes Section */}
+						<div className="flex justify-center">
+							<div className="flex items-center gap-2">
+								<Sparkles className="w-4 h-4 text-blue-400" />
+								<p className=" text-xs lg:text-sm italic text-slate-400">
+									&ldquo;{quote}&rdquo;
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
