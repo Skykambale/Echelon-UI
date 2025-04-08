@@ -1,6 +1,4 @@
-import React from "react";
-
-const AIComponent: React.FC = () => {
+const AIComponent = () => {
 	return (
 		<div className="ai-component">
 			<h1>AI Component</h1>

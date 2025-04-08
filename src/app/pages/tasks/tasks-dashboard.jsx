@@ -201,7 +201,7 @@ const TaskDashboard = () => {
 							onClick={() => setShowNewTask(true)}
 						>
 							<Plus className="h-5 w-5" />
-							<span className="hidden  lg:block">Add new Task</span>
+							<span className="hidden  lg:block">Add New Task</span>
 							<span className="text-xs lg:text-base lg:hidden">New Task</span>
 						</Button>
 					</div>
