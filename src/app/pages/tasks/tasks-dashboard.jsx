@@ -228,7 +228,7 @@ const TaskDashboard = () => {
 
 					{/* Tasks Section */}
 					<div className="w-full h-full flex flex-col justify-between overflow-hidden">
-						<div className="flex-1 overflow-auto min-h-[60vh] max-h-[70vh]">
+						<div className="flex-1 overflow-auto min-h-[60dvh] max-h-[70dvh]">
 							{Array.isArray(taskList) && taskList.length > 0 ? (
 								<div className="space-y-3">
 									{taskList.toReversed().map((task) => (
@@ -245,7 +245,7 @@ const TaskDashboard = () => {
 									))}
 								</div>
 							) : (
-								<div className="flex justify-center items-center h-[60vh] text-slate-400">
+								<div className="flex justify-center items-center h-[60dvh] text-slate-400">
 									<p>No tasks available!</p>
 								</div>
 							)}

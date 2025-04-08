@@ -4,21 +4,34 @@ import NewAIPlan from "@/app/components/ai/NewAIPlan";
 import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useRestSecurityClient } from "@/app/hooks/securityClient";
+import RoadmapDetails from "./RoadmapDetails";
 const AIPage = () => {
 	const [plans, setPlans] = useState(demoData);
 	const [showNewPlan, setShowNewPlan] = useState(false);
 	const navigate = useNavigate();
+	const restClient = useRestSecurityClient();
+	const [roadmapData, setRoadmapData] = useState(null);
 
 	const handleCreatePlan = async (inputData) => {
-		const plan = {
-			id: Date.now().toString(),
-			title: inputData.title,
-			level: inputData.level,
-			months: parseInt(inputData.months),
-			hoursPerDay: parseInt(inputData.hoursPerDay),
-			expanded: false,
-		};
-		setPlans([...plans, plan]);
+		try {
+			const plan = {
+				title: inputData.title,
+				skillLevel: inputData.level || 0,
+				monthsAllocated: parseInt(inputData.months),
+				hoursPerDay: parseInt(inputData.hoursPerDay),
+				startDate: new Date(),
+			};
+
+			const response = await restClient.post(`/ai/roadmap/new`, plan);
+			if (response.result) {
+				setRoadmapData(response.result);
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			//stop loader here.
+		}
 	};
 
 	const handlePlanClick = (id) => {
@@ -26,48 +39,60 @@ const AIPage = () => {
 	};
 
 	return (
-		<div className="p-4 w-full h-full mx-auto relative">
-			<div className="flex justify-between items-center mb-4">
-				<h1 className="text-xl font-medium text-slate-200">Roadmaps by AI</h1>
-				<Button
-					onClick={() => setShowNewPlan(true)}
-					className="bg-purple-800 hover:bg-purple-900 text-white px-4 py-2 rounded-md flex items-center shadow-md"
-				>
-					<Plus className="" />
-					<span>Add AI Plan</span>
-				</Button>
-			</div>
-			<div className="border-b border-gray-700 mb-4"></div>
-			<div className="w-full overflow-y-auto h-[80vh]">
-				{plans.length === 0 ? (
-					<div className="text-center py-12 bg-[#222] rounded-lg">
-						<p className="text-gray-400 text-lg">No Plan created, let&apos;s create one.</p>
+		<>
+			{roadmapData ? (
+				<RoadmapDetails roadmapData={roadmapData} />
+			) : (
+				<div className="p-4 w-full h-full mx-auto relative">
+					<div className="flex justify-between items-center mb-4">
+						<h1 className="text-xl font-medium text-slate-200">Roadmaps by AI</h1>
+						<Button
+							onClick={() => setShowNewPlan(true)}
+							className="bg-purple-800 hover:bg-purple-900 text-white px-4 py-2 rounded-md flex items-center shadow-md"
+						>
+							<Plus className="" />
+							<span>Add AI Plan</span>
+						</Button>
 					</div>
-				) : (
-					<ul className="divide-y divide-gray-700">
-						{plans.map((plan) => (
-							<li
-								key={plan.id}
-								className="flex justify-between items-center py-4 px-6 bg-[#222] hover:bg-[#191919] cursor-pointer rounded-md mb-2"
-								onClick={() => handlePlanClick(plan.id)}
-							>
-								<div className="flex items-center">
-									<h3 className="text-lg font-semibold text-white mr-3">{plan.title}</h3>
+					<div className="border-b border-gray-700 mb-4"></div>
+					<div className="w-full overflow-y-auto h-[80vh]">
+						{plans.length === 0 ? (
+							<div className="text-center py-12 bg-[#222] rounded-lg">
+								<p className="text-gray-400 text-lg">
+									No Plan created, let&apos;s create one.
+								</p>
+							</div>
+						) : (
+							<ul className="divide-y divide-gray-700">
+								{plans.map((plan) => (
+									<li
+										key={plan.id}
+										className="flex justify-between items-center py-4 px-6 bg-[#222] hover:bg-[#191919] cursor-pointer rounded-md mb-2"
+										onClick={() => handlePlanClick(plan.id)}
+									>
+										<div className="flex items-center">
+											<h3 className="text-lg font-semibold text-white mr-3">
+												{plan.title}
+											</h3>
 
-									<Badge className="bg-purple-500/20 text-purple-300 text-xs rounded-md px-2 py-0.5 w-fit border-none">
-										{plan?.level}
-									</Badge>
-								</div>
-								<span className="text-sm text-gray-400">
-									{plan.months} months • {plan.hoursPerDay} hours/day
-								</span>
-							</li>
-						))}
-					</ul>
-				)}
-			</div>
-			{showNewPlan && <NewAIPlan onClose={() => setShowNewPlan(false)} onSubmit={handleCreatePlan} />}
-		</div>
+											<Badge className="bg-purple-500/20 text-purple-300 text-xs rounded-md px-2 py-0.5 w-fit border-none">
+												{plan?.level}
+											</Badge>
+										</div>
+										<span className="text-sm text-gray-400">
+											{plan.months} months • {plan.hoursPerDay} hours/day
+										</span>
+									</li>
+								))}
+							</ul>
+						)}
+					</div>
+					{showNewPlan && (
+						<NewAIPlan onClose={() => setShowNewPlan(false)} onSubmit={handleCreatePlan} />
+					)}
+				</div>
+			)}
+		</>
 	);
 };
 
