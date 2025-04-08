@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import NewAIPlan from "@/app/components/ai/NewAIPlan";
 import { Plus } from "lucide-react";
-
+import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 const AIPage = () => {
 	const [plans, setPlans] = useState(demoData);
-
 	const [showNewPlan, setShowNewPlan] = useState(false);
+	const navigate = useNavigate();
 
 	const handleCreatePlan = async (inputData) => {
 		const plan = {
@@ -20,55 +21,51 @@ const AIPage = () => {
 		setPlans([...plans, plan]);
 	};
 
+	const handlePlanClick = (id) => {
+		navigate(`/ai/roadmap/${id}`);
+	};
+
 	return (
-		<div className="p-6 w-full h-full mx-auto relative">
+		<div className="p-4 w-full h-full mx-auto relative">
 			<div className="flex justify-between items-center mb-4">
-				<h1 className="text-2xl font-bold text-white">AI Plans</h1>
-				<Button className="bg-purple-800 hover:bg-purple-900 w-[100px] lg:w-fit" onClick={() => {}}>
-					<Plus className="h-5 w-5" />
-					<span className="hidden  lg:block">Add New Plan</span>
-					<span className="text-xs lg:text-base lg:hidden">New Plan</span>
+				<h1 className="text-xl font-medium text-slate-200">Roadmaps by AI</h1>
+				<Button
+					onClick={() => setShowNewPlan(true)}
+					className="bg-purple-800 hover:bg-purple-900 text-white px-4 py-2 rounded-md flex items-center shadow-md"
+				>
+					<Plus className="" />
+					<span>Add AI Plan</span>
 				</Button>
 			</div>
-			<div className="border-b border-gray-700 my-4"></div>
-
-			<div className="w-full">
+			<div className="border-b border-gray-700 mb-4"></div>
+			<div className="w-full overflow-y-auto h-[80vh]">
 				{plans.length === 0 ? (
 					<div className="text-center py-12 bg-[#222] rounded-lg">
 						<p className="text-gray-400 text-lg">No Plan created, let&apos;s create one.</p>
 					</div>
 				) : (
-					<div className="space-y-4 overflow-y-auto max-h-[80vh]">
+					<ul className="divide-y divide-gray-700">
 						{plans.map((plan) => (
-							<div
+							<li
 								key={plan.id}
-								className="border border-[#333] rounded-lg p-6 cursor-pointer hover:bg-[#181818] transition-colors duration-200 bg-[#222]"
+								className="flex justify-between items-center py-4 px-6 bg-[#222] hover:bg-[#191919] cursor-pointer rounded-md mb-2"
+								onClick={() => handlePlanClick(plan.id)}
 							>
-								<div className="flex justify-between items-center">
-									<div className="flex-1 flex items-center">
-										<h3 className="text-lg font-semibold text-white text-left mr-2">
-											{plan.title}
-										</h3>
-										<span className="px-1 py-0.5 text-xs font-medium bg-blue-500 text-white rounded-full">
-											{plan.level}
-										</span>
-									</div>
-									<span className="text-sm text-gray-400 ml-2">
-										{plan.months} months • {plan.hoursPerDay} hours/day
-									</span>
+								<div className="flex items-center">
+									<h3 className="text-lg font-semibold text-white mr-3">{plan.title}</h3>
+
+									<Badge className="bg-purple-500/20 text-purple-300 text-xs rounded-md px-2 py-0.5 w-fit border-none">
+										{plan?.level}
+									</Badge>
 								</div>
-								{plan.expanded && (
-									<div className="mt-4 pt-4 border-t border-[#333]">
-										{/* Steps will be implemented later */}
-									</div>
-								)}
-							</div>
+								<span className="text-sm text-gray-400">
+									{plan.months} months • {plan.hoursPerDay} hours/day
+								</span>
+							</li>
 						))}
-					</div>
+					</ul>
 				)}
 			</div>
-
-			{/* New Plan Modal */}
 			{showNewPlan && <NewAIPlan onClose={() => setShowNewPlan(false)} onSubmit={handleCreatePlan} />}
 		</div>
 	);
