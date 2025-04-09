@@ -13,4 +13,6 @@ export class GLOBAL_CONSTANTS {
 		{ label: "Efficient", value: 3, color: "#03A9F4" }, // blue
 		{ label: "Peak", value: 4, color: "#FF69B4" }, // pink
 	];
+
+	public static readonly skillLevelMapping = ["Beginner", "Intermediate", "Advance", "Expert"];
 }

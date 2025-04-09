@@ -9,13 +9,14 @@ import RoadmapDetails from "./RoadmapDetails";
 import Loading from "@/app/components/LoadingSpinner";
 import { useAuth } from "@clerk/clerk-react";
 import { useToast } from "@/hooks/use-toast";
+import { GLOBAL_CONSTANTS } from "@/app/utils/GLOBAL_CONSTANTS";
 const AIPage = () => {
 	const [plans, setPlans] = useState([]);
 	const [showNewPlan, setShowNewPlan] = useState(false);
 	const navigate = useNavigate();
 	const restClient = useRestSecurityClient();
 	const [roadmapData, setRoadmapData] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const { userId } = useAuth();
 	const { toast } = useToast();
 
@@ -141,7 +142,7 @@ const AIPage = () => {
 											</h3>
 
 											<Badge className="bg-purple-500/20 text-purple-300 text-xs rounded-md px-2 py-0.5 w-fit border-none">
-												{plan?.level}
+												{GLOBAL_CONSTANTS.skillLevelMapping[plan?.skillLevel]}
 											</Badge>
 										</div>
 										<span className="text-sm text-gray-400">

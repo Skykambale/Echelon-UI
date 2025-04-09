@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { GLOBAL_CONSTANTS } from "@/app/utils/GLOBAL_CONSTANTS";
 
 const defaultInputValues = {
 	title: "",
@@ -86,31 +87,18 @@ const NewAIPlan = ({ onClose, onSubmit }) => {
 								>
 									<SelectValue placeholder="Select level" />
 								</SelectTrigger>
-								<SelectContent className="bg-[#222] border-slate-700">
-									<SelectItem
-										value="0"
-										className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
-									>
-										Beginner
-									</SelectItem>
-									<SelectItem
-										value="1"
-										className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
-									>
-										Intermediate
-									</SelectItem>
-									<SelectItem
-										value="2"
-										className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
-									>
-										Expert
-									</SelectItem>
-									<SelectItem
-										value="3"
-										className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
-									>
-										Master
-									</SelectItem>
+								<SelectContent className="bg-[#222] text-white border-slate-700">
+									{GLOBAL_CONSTANTS.skillLevelMapping.map((level, index) => {
+										return (
+											<SelectItem
+												value={index}
+												key={index}
+												className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
+											>
+												{level}
+											</SelectItem>
+										);
+									})}
 								</SelectContent>
 							</Select>
 						</div>
