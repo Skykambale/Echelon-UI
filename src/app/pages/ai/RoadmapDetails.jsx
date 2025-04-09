@@ -2,11 +2,12 @@ import PropTypes from "prop-types";
 import { Button } from "@/components/ui/button";
 import { X, RefreshCw, Edit, Check, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { useRestSecurityClient } from "@/app/hooks/securityClient";
 import { useAuth } from "@clerk/clerk-react";
 import Loading from "@/app/components/LoadingSpinner";
+import { useToast } from "@/hooks/use-toast";
 
 const RoadmapDetails = ({ roadmapData = null, onConfirm, onCancel }) => {
 	const { id } = useParams();
@@ -15,14 +16,21 @@ const RoadmapDetails = ({ roadmapData = null, onConfirm, onCancel }) => {
 	const [isLoading, setIsLoading] = useState(!data);
 	const restClient = useRestSecurityClient();
 	const { userId } = useAuth();
+	const { toast } = useToast();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchRoadmapDetails = async () => {
 			if (!id || roadmapData) return;
 			try {
 				setIsLoading(true);
-				const response = await restClient.get(`/api/roadmap/${userId}/${id}`);
-				if (response?.result) setRoadmapData(response.result);
+				const response = await restClient.get(`/ai/roadmap/get/${userId}/${id}`);
+				if (response?.result) {
+					const formattedData = response.result[0];
+					formattedData.plan = formattedData.aiResponse;
+					delete formattedData.aiResponse;
+					setRoadmapData(formattedData);
+				}
 			} catch (err) {
 				console.error("Error fetching roadmap details:", err);
 			} finally {
@@ -30,6 +38,7 @@ const RoadmapDetails = ({ roadmapData = null, onConfirm, onCancel }) => {
 			}
 		};
 		fetchRoadmapDetails();
+		console.log(data);
 	}, [id, roadmapData, userId]);
 
 	const toggleStep = (index) => {
@@ -46,9 +55,31 @@ const RoadmapDetails = ({ roadmapData = null, onConfirm, onCancel }) => {
 		onConfirm(data);
 	};
 
+	const handleDelete = async () => {
+		try {
+			setIsLoading(true);
+			const response = await restClient.delete(`/ai/roadmap/delete/${userId}/${id}`);
+			console.log(response);
+			if (response.message) {
+				setRoadmapData(null);
+				toast({
+					title: "Plan deleted successfully",
+				});
+			}
+		} catch (err) {
+			toast({
+				title: "Oops! Something went wrong while deleting plan",
+				description: err.message,
+				variant: "destructive",
+			});
+		} finally {
+			setIsLoading(false);
+			navigate("/ai");
+		}
+	};
+
 	useEffect(() => {
 		console.log(data);
-		console.log(Object.entries(data.plan));
 	}, []);
 
 	return (
@@ -79,7 +110,7 @@ const RoadmapDetails = ({ roadmapData = null, onConfirm, onCancel }) => {
 				<div className="flex justify-center items-center h-[75dvh] lg:h-[80dvh]">
 					<p className="text-sm text-gray-400">Loading roadmap details...</p>
 				</div>
-			) : data?.isFeasible ? (
+			) : data?.isFeasible || id ? (
 				<div className="px-4 py-4 overflow-y-auto h-[75dvh] lg:h-[80dvh]">
 					<h2 className="text-lg font-medium text-gray-400 mb-6">Steps</h2>
 					<div className="space-y-1">
@@ -133,7 +164,7 @@ const RoadmapDetails = ({ roadmapData = null, onConfirm, onCancel }) => {
 					// If id is present, which means it is a saved roadmap which can be deleted and doesn't need other actions.
 					<div className="py-4 flex justify-end items-center space-x-3">
 						<Button
-							onClick={handleCancel}
+							onClick={handleDelete}
 							className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
 						>
 							<Trash2 />

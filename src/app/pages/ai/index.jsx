@@ -91,6 +91,8 @@ const AIPage = () => {
 		setRoadmapData(null);
 	};
 
+	const handleDeletePlan = async (id) => {};
+
 	useEffect(() => {
 		getAllRoadmaps();
 	}, []);
@@ -103,6 +105,7 @@ const AIPage = () => {
 					roadmapData={roadmapData}
 					onConfirm={handleConfirmPlan}
 					onCancel={handleCancelPlan}
+					onDelete={handleDeletePlan}
 				/>
 			) : (
 				<div className="p-4 w-full h-full mx-auto relative">
@@ -130,7 +133,7 @@ const AIPage = () => {
 									<li
 										key={plan.id}
 										className="flex justify-between items-center py-4 px-6 bg-[#222] hover:bg-[#191919] cursor-pointer rounded-md mb-2"
-										onClick={() => handlePlanClick(plan.id)}
+										onClick={() => handlePlanClick(plan._id)}
 									>
 										<div className="flex items-center">
 											<h3 className="text-lg font-semibold text-white mr-3">
