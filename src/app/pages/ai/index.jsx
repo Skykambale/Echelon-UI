@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import NewAIPlan from "@/app/components/ai/NewAIPlan";
 import { Plus } from "lucide-react";
@@ -6,12 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useRestSecurityClient } from "@/app/hooks/securityClient";
 import RoadmapDetails from "./RoadmapDetails";
+import Loading from "@/app/components/LoadingSpinner";
+import { useAuth } from "@clerk/clerk-react";
+import { useToast } from "@/hooks/use-toast";
 const AIPage = () => {
-	const [plans, setPlans] = useState(demoData);
+	const [plans, setPlans] = useState([]);
 	const [showNewPlan, setShowNewPlan] = useState(false);
 	const navigate = useNavigate();
 	const restClient = useRestSecurityClient();
 	const [roadmapData, setRoadmapData] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const { userId } = useAuth();
+	const { toast } = useToast();
 
 	const handleCreatePlan = async (inputData) => {
 		try {
@@ -23,27 +29,34 @@ const AIPage = () => {
 				startDate: new Date(),
 			};
 
+			setShowNewPlan(false);
+			setIsLoading(true);
+
 			const response = await restClient.post(`/ai/roadmap/new`, plan);
 			console.log("AI RESPONSE :: ");
 			console.log(response);
 			if (response.result) {
 				setRoadmapData(response.result);
-				// setPlans((prevPlans) => [
-				// 	...prevPlans,
-				// 	{
-				// 		id: response.result.id,
-				// 		title: inputData.title,
-				// 		level: inputData.level,
-				// 		months: parseInt(inputData.months),
-				// 		hoursPerDay: parseInt(inputData.hoursPerDay),
-				// 		expanded: false,
-				// 	},
-				// ]);
 			}
 		} catch (error) {
 			console.error("Error creating plan:", error);
 		} finally {
-			setShowNewPlan(false);
+			setIsLoading(false);
+		}
+	};
+
+	const getAllRoadmaps = async () => {
+		try {
+			setIsLoading(true);
+			const response = await restClient.get(`/ai/roadmap/get/${userId}`);
+			if (response.result) {
+				console.log(response.result);
+				setPlans(response.result);
+			}
+		} catch (error) {
+			console.error("Error creating plan:", error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -51,10 +64,46 @@ const AIPage = () => {
 		navigate(`/ai/roadmap/${id}`);
 	};
 
+	const handleConfirmPlan = async (data) => {
+		try {
+			setIsLoading(true);
+			const response = await restClient.post("/ai/roadmap/confirm", { userId, data });
+			console.log(response);
+			if (response.result) {
+				setRoadmapData(null);
+				toast({
+					title: "New Plan created successfully",
+				});
+				await getAllRoadmaps();
+			}
+		} catch (err) {
+			toast({
+				title: "Oops! Something went wrong while creating plan",
+				description: err.message,
+				variant: "destructive",
+			});
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleCancelPlan = () => {
+		setRoadmapData(null);
+	};
+
+	useEffect(() => {
+		getAllRoadmaps();
+	}, []);
+
 	return (
 		<>
+			{isLoading && <Loading />}
 			{roadmapData ? (
-				<RoadmapDetails roadmapData={roadmapData} />
+				<RoadmapDetails
+					roadmapData={roadmapData}
+					onConfirm={handleConfirmPlan}
+					onCancel={handleCancelPlan}
+				/>
 			) : (
 				<div className="p-4 w-full h-full mx-auto relative">
 					<div className="flex justify-between items-center mb-4">
@@ -70,9 +119,9 @@ const AIPage = () => {
 					<div className="border-b border-gray-700 mb-4"></div>
 					<div className="w-full overflow-y-auto h-[80vh]">
 						{plans.length === 0 ? (
-							<div className="text-center py-12 bg-[#222] rounded-lg">
+							<div className="w-full h-full flex justify-center items-center py-12 bg-[#222] rounded-lg">
 								<p className="text-gray-400 text-lg">
-									No Plan created, let&apos;s create one.
+									No Plans created, let&apos;s create one now.
 								</p>
 							</div>
 						) : (
@@ -110,175 +159,3 @@ const AIPage = () => {
 };
 
 export default AIPage;
-
-const demoData = [
-	{
-		id: "1",
-		title: "Machine Learning Fundamentals",
-		level: "Beginner",
-		months: 3,
-		hoursPerDay: 2,
-		expanded: false,
-	},
-	{
-		id: "2",
-		title: "Deep Learning",
-		level: "Intermediate",
-		months: 4,
-		hoursPerDay: 3,
-		expanded: false,
-	},
-	// Additional dummy plans
-	{
-		id: "3",
-		title: "Data Science Basics",
-		level: "Beginner",
-		months: 2,
-		hoursPerDay: 1,
-		expanded: false,
-	},
-	{
-		id: "4",
-		title: "Advanced AI Techniques",
-		level: "Advanced",
-		months: 6,
-		hoursPerDay: 4,
-		expanded: false,
-	},
-	{
-		id: "5",
-		title: "AI Ethics",
-		level: "Intermediate",
-		months: 1,
-		hoursPerDay: 1,
-		expanded: false,
-	},
-	{
-		id: "6",
-		title: "Neural Networks",
-		level: "Intermediate",
-		months: 3,
-		hoursPerDay: 2,
-		expanded: false,
-	},
-	{
-		id: "7",
-		title: "AI in Healthcare",
-		level: "Advanced",
-		months: 5,
-		hoursPerDay: 3,
-		expanded: false,
-	},
-	{
-		id: "8",
-		title: "AI for Robotics",
-		level: "Advanced",
-		months: 4,
-		hoursPerDay: 3,
-		expanded: false,
-	},
-	{
-		id: "9",
-		title: "Natural Language Processing",
-		level: "Intermediate",
-		months: 3,
-		hoursPerDay: 2,
-		expanded: false,
-	},
-	{
-		id: "10",
-		title: "Computer Vision",
-		level: "Intermediate",
-		months: 4,
-		hoursPerDay: 3,
-		expanded: false,
-	},
-	{
-		id: "11",
-		title: "AI for Finance",
-		level: "Beginner",
-		months: 2,
-		hoursPerDay: 1,
-		expanded: false,
-	},
-	{
-		id: "12",
-		title: "AI for Marketing",
-		level: "Beginner",
-		months: 2,
-		hoursPerDay: 1,
-		expanded: false,
-	},
-	{
-		id: "13",
-		title: "AI for Education",
-		level: "Intermediate",
-		months: 3,
-		hoursPerDay: 2,
-		expanded: false,
-	},
-	{
-		id: "14",
-		title: "AI for Gaming",
-		level: "Advanced",
-		months: 5,
-		hoursPerDay: 3,
-		expanded: false,
-	},
-	{
-		id: "15",
-		title: "AI for Agriculture",
-		level: "Intermediate",
-		months: 3,
-		hoursPerDay: 2,
-		expanded: false,
-	},
-	{
-		id: "16",
-		title: "AI for Transportation",
-		level: "Advanced",
-		months: 4,
-		hoursPerDay: 3,
-		expanded: false,
-	},
-	{
-		id: "17",
-		title: "AI for Cybersecurity",
-		level: "Advanced",
-		months: 5,
-		hoursPerDay: 3,
-		expanded: false,
-	},
-	{
-		id: "18",
-		title: "AI for Environment",
-		level: "Beginner",
-		months: 2,
-		hoursPerDay: 1,
-		expanded: false,
-	},
-	{
-		id: "19",
-		title: "AI for Social Good",
-		level: "Intermediate",
-		months: 3,
-		hoursPerDay: 2,
-		expanded: false,
-	},
-	{
-		id: "20",
-		title: "AI for Art",
-		level: "Beginner",
-		months: 2,
-		hoursPerDay: 1,
-		expanded: false,
-	},
-	{
-		id: "21",
-		title: "AI for Music",
-		level: "Intermediate",
-		months: 3,
-		hoursPerDay: 2,
-		expanded: false,
-	},
-];
