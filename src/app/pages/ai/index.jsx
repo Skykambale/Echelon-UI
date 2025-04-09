@@ -24,13 +24,26 @@ const AIPage = () => {
 			};
 
 			const response = await restClient.post(`/ai/roadmap/new`, plan);
+			console.log("AI RESPONSE :: ");
+			console.log(response);
 			if (response.result) {
 				setRoadmapData(response.result);
+				// setPlans((prevPlans) => [
+				// 	...prevPlans,
+				// 	{
+				// 		id: response.result.id,
+				// 		title: inputData.title,
+				// 		level: inputData.level,
+				// 		months: parseInt(inputData.months),
+				// 		hoursPerDay: parseInt(inputData.hoursPerDay),
+				// 		expanded: false,
+				// 	},
+				// ]);
 			}
 		} catch (error) {
-			console.log(error);
+			console.error("Error creating plan:", error);
 		} finally {
-			//stop loader here.
+			setShowNewPlan(false);
 		}
 	};
 

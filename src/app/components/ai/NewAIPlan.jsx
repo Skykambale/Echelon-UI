@@ -88,25 +88,25 @@ const NewAIPlan = ({ onClose, onSubmit }) => {
 								</SelectTrigger>
 								<SelectContent className="bg-[#222] border-slate-700">
 									<SelectItem
-										value="beginner"
+										value="0"
 										className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
 									>
 										Beginner
 									</SelectItem>
 									<SelectItem
-										value="intermediate"
+										value="1"
 										className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
 									>
 										Intermediate
 									</SelectItem>
 									<SelectItem
-										value="expert"
+										value="2"
 										className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
 									>
 										Expert
 									</SelectItem>
 									<SelectItem
-										value="master"
+										value="3"
 										className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
 									>
 										Master
