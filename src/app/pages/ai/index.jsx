@@ -92,8 +92,6 @@ const AIPage = () => {
 		setRoadmapData(null);
 	};
 
-	const handleDeletePlan = async (id) => {};
-
 	useEffect(() => {
 		getAllRoadmaps();
 	}, []);
@@ -106,7 +104,6 @@ const AIPage = () => {
 					roadmapData={roadmapData}
 					onConfirm={handleConfirmPlan}
 					onCancel={handleCancelPlan}
-					onDelete={handleDeletePlan}
 				/>
 			) : (
 				<div className="p-4 w-full h-full mx-auto relative">
