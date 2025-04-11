@@ -1,7 +1,7 @@
 import { CHART_CONSTANTS } from "@/app/utils/CHART_CONSTANTS";
 import LineChart from "./LineChart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getStartAndEndDate } from "@/app/utils/date-utils";
@@ -47,7 +47,7 @@ const LineChartWrapper = () => {
 			const { startDate, endDate } = getStartAndEndDate(new Date(), dataRange, operation);
 
 			const response = await restClient.get(
-				`/day/productivity/status/line-chart?startDate=${startDate}&endDate=${endDate}&userId=${userId}`
+				`/day/productivity/status/line-chart?startDate=${startDate}&endDate=${endDate}&userId=${"12345"}`
 			);
 
 			// Set the response.
@@ -56,6 +56,9 @@ const LineChartWrapper = () => {
 		}
 	};
 
+	useEffect(() => {
+		getLineChartData(selectedDataRange, 0);
+	});
 	return (
 		<div className="w-full h-full flex-1 flex flex-col bg-[#111] gap-8 p-4 rounded-md mb-6">
 			<div className="flex justify-between">

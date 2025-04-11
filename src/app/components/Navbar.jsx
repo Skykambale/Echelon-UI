@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BsStars } from "react-icons/bs";
 import { FaChartSimple } from "react-icons/fa6";
 import { FaTasks, FaFire } from "react-icons/fa";
@@ -18,6 +18,7 @@ const Navbar = ({ isMobileView }) => {
 	const restClient = useRestSecurityClient();
 	const navigate = useNavigate();
 	const auth = useAuth();
+	const location = useLocation();
 
 	const handleNavLinkClick = (tab) => {
 		setSelectedTab(tab);
@@ -29,6 +30,10 @@ const Navbar = ({ isMobileView }) => {
 		const response = await restClient.get("/day/streak?userId=" + userId);
 		setStreak(response?.result?.streak || 0);
 	};
+
+	useEffect(() => {
+		setSelectedTab(location.pathname);
+	}, [location.pathname]);
 
 	useEffect(() => {
 		getStreak();
