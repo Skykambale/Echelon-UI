@@ -50,7 +50,7 @@ const NewAIPlan = ({ onClose, onSubmit }) => {
 							variant="ghost"
 							size="icon"
 							onClick={handleCloseModal}
-							className="text-slate-400 hover:text-slate-200 hover:bg-[#222] h-7 w-7 sm:h-8 sm:w-8"
+							className="text-slate-400 hover:text-white hover:bg-red-600 h-7 w-7 sm:h-8 sm:w-8"
 						>
 							<X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
 						</Button>

@@ -102,7 +102,7 @@ const AIPage = () => {
 	}, []);
 
 	return (
-		<>
+		<div className="relative">
 			{isLoading && <Loading />}
 			{roadmapData ? (
 				<RoadmapDetails
@@ -160,7 +160,7 @@ const AIPage = () => {
 					)}
 				</div>
 			)}
-		</>
+		</div>
 	);
 };
 
