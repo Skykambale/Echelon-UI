@@ -83,7 +83,7 @@ const NewTask = ({ onClose, onSubmit }) => {
 							variant="ghost"
 							size="icon"
 							onClick={handleCloseModal}
-							className="text-slate-400 hover:text-slate-200 h-7 w-7 sm:h-8 sm:w-8"
+							className="text-slate-400 hover:bg-red-600 hover:text-white h-7 w-7 sm:h-8 sm:w-8"
 						>
 							<X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
 						</Button>
@@ -136,12 +136,12 @@ const NewTask = ({ onClose, onSubmit }) => {
 									>
 										<SelectValue placeholder="Select category" />
 									</SelectTrigger>
-									<SelectContent className="bg-[#222] border-slate-700">
+									<SelectContent className="bg-[#222] border-slate-700 ">
 										{categories.map((item) => (
 											<SelectItem
 												value={item.value}
 												key={item.value}
-												className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm"
+												className="focus:bg-[#333] focus:text-slate-300 text-xs sm:text-sm text-white"
 											>
 												{item.label}
 											</SelectItem>
