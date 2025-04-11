@@ -102,7 +102,7 @@ const AIPage = () => {
 	}, []);
 
 	return (
-		<div className="relative">
+		<div className="relative w-full h-full">
 			{isLoading && <Loading />}
 			{roadmapData ? (
 				<RoadmapDetails
