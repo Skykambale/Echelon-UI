@@ -68,6 +68,11 @@ const AIPage = () => {
 	const handleConfirmPlan = async (data) => {
 		try {
 			setIsLoading(true);
+			if (data.plan) {
+				data.aiResponse = data.plan;
+				delete data.plan;
+			}
+
 			const response = await restClient.post("/ai/roadmap/confirm", { userId, data });
 			console.log(response);
 			if (response.result) {

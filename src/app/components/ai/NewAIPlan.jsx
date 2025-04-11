@@ -22,7 +22,7 @@ const NewAIPlan = ({ onClose, onSubmit }) => {
 	};
 
 	const handleOnCreate = async () => {
-		if (inputData.title && inputData.level && inputData.months && inputData.hoursPerDay) {
+		if (inputData.title && inputData.level != null && inputData.months && inputData.hoursPerDay) {
 			await onSubmit(inputData);
 			onClose();
 		}
