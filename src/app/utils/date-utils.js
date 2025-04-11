@@ -21,6 +21,10 @@ export function getStartAndEndDate(today, rangeType, operation) {
 
 		result.startDate = startOfWeek;
 		result.endDate = endOfWeek;
+	} else if (rangeType === "year") {
+		const targetYear = today.getFullYear() + operation;
+		result.startDate = new Date(targetYear, 0, 1); // Jan 1st
+		result.endDate = new Date(targetYear, 11, 31); // Dec 31st
 	}
 
 	return result;
