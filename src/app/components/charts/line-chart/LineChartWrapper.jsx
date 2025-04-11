@@ -3,6 +3,8 @@ import LineChart from "./LineChart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const LineChartWrapper = () => {
 	const [selectedDataRange, setSelectedDataRange] = useState(CHART_CONSTANTS.dataRanges.weekly);
@@ -26,6 +28,8 @@ const LineChartWrapper = () => {
 		}
 	};
 
+	const handleChangeDateRangeByOne = () => {};
+
 	// const getLineChartData = async (dataRange) => {
 	// 	try {
 	// 		const userId = auth.userId;
@@ -45,25 +49,41 @@ const LineChartWrapper = () => {
 			<div className="flex justify-between">
 				<h3 className="text-xl font-bold text-slate-300">Productivity Status</h3>
 				<div className="flex gap-2 items-center">
-					<p className="text-[#d1d1d1]">Select Data Range</p>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="bg-[#222] hover:bg-[#333] hover:text-white"
+						onClick={() => handleChangeDateRangeByOne("previous")}
+					>
+						<ChevronLeft className="h-5 w-5" />
+					</Button>
+
 					<Select onValueChange={(value) => handleOnDataRangeChange(value)}>
 						<SelectTrigger
-							className={`w-[110px] h-[30px] bg-[#222] border border-white text-white rounded-md`}
+							className={`w-[110px] h-[35px] bg-[#222] border-none text-white rounded-md`}
 						>
 							<SelectValue placeholder={selectedDataRange} />
 						</SelectTrigger>
-						<SelectContent className="bg-[#222] border border-white text-white">
+						<SelectContent className="bg-[#222] border-none text-white">
 							{allowedDataRangesForLineChart.map((item) => (
 								<SelectItem
 									value={item.value}
 									key={item.value}
-									className="hover:bg-[#333] focus:bg-[#444] text-white"
+									className="hover:bg-[#333] focus:bg-[#444] text-white focus:text-white"
 								>
 									{item.label}
 								</SelectItem>
 							))}
 						</SelectContent>
 					</Select>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="bg-[#222] hover:bg-[#333] hover:text-white"
+						onClick={() => handleChangeDateRangeByOne("next")}
+					>
+						<ChevronRight className="h-5 w-5" />
+					</Button>
 				</div>
 			</div>
 			<LineChart
