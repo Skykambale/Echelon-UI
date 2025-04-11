@@ -2,14 +2,18 @@ import { CHART_CONSTANTS } from "@/app/utils/CHART_CONSTANTS";
 import LineChart from "./LineChart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getStartAndEndDate } from "@/app/utils/date-utils";
+import { useAuth } from "@clerk/clerk-react";
+import { useRestSecurityClient } from "@/app/hooks/securityClient";
 
 const LineChartWrapper = () => {
 	const [selectedDataRange, setSelectedDataRange] = useState(CHART_CONSTANTS.dataRanges.weekly);
+	const [directionDelta, setDirectionDelta] = useState(0);
 	const allowedDataRangesForLineChart = CHART_CONSTANTS.lineChartSelectDataRanges;
-	// const auth = useAuth();
+	const { userId } = useAuth();
+	const restClient = useRestSecurityClient();
 
 	const productivityLevels = CHART_CONSTANTS.productivityLevels;
 
@@ -26,23 +30,31 @@ const LineChartWrapper = () => {
 			// we will just set them
 			setXAxisLabels(dummyMonthData);
 		}
+		getLineChartData(value, 0);
 	};
 
-	const handleChangeDateRangeByOne = () => {};
+	const handleChangeDateRangeByOne = (direction) => {
+		let newDelta = directionDelta;
+		if (direction === "previous") newDelta -= 1;
+		else if (direction === "next") newDelta += 1;
+		setDirectionDelta(newDelta);
 
-	// const getLineChartData = async (dataRange) => {
-	// 	try {
-	// 		const userId = auth.userId;
+		getLineChartData(selectedDataRange, newDelta);
+	};
 
-	// 		let range = "";
-	// 		if (dataRange === CHART_CONSTANTS.dataRanges.weekly) {
-	// 		} else {
-	// 		}
-	// 		console.log();
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
+	const getLineChartData = async (dataRange, operation) => {
+		try {
+			const { startDate, endDate } = getStartAndEndDate(new Date(), dataRange, operation);
+
+			const response = await restClient.get(
+				`/day/productivity/status/line-chart?startDate=${startDate}&endDate=${endDate}&userId=${userId}`
+			);
+
+			// Set the response.
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<div className="w-full h-full flex-1 flex flex-col bg-[#111] gap-8 p-4 rounded-md mb-6">
