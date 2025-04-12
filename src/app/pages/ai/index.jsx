@@ -148,7 +148,7 @@ const AIPage = () => {
 											</Badge>
 										</div>
 										<span className="text-sm text-gray-400">
-											{plan.months} months • {plan.hoursPerDay} hours/day
+											{plan.monthsAllocated} months • {plan.hoursPerDay} hours/day
 										</span>
 									</li>
 								))}

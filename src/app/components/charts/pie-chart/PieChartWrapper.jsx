@@ -8,6 +8,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getStartAndEndDate } from "@/app/utils/date-utils";
+import Loading from "../../LoadingSpinner";
 
 const PieChartWrapper = () => {
 	const [selectedDataRange, setSelectedDataRange] = useState(CHART_CONSTANTS.dataRanges.monthly);
@@ -18,8 +19,8 @@ const PieChartWrapper = () => {
 	const pieChartLabels = CHART_CONSTANTS.weekdaysInShort;
 	const restClient = useRestSecurityClient();
 	const auth = useAuth();
-
-	const dailyProductivity = [2, 3, 4, 0, 0, 2, 15]; // Will come from an api call
+	const [productivityData, setProductivityData] = useState([]);
+	const [isLoading, setIsLoading] = useState([]);
 
 	// Mock API call to fetch day-specific data
 	const fetchDayData = async (day) => {
@@ -71,13 +72,22 @@ const PieChartWrapper = () => {
 		try {
 			const { startDate, endDate } = getStartAndEndDate(new Date(), selectedDataRange, operation);
 			const userId = auth.userId;
+
+			setIsLoading(true);
 			const response = await restClient.get(
 				`/day/productivity/status/pie-chart?startDate=${startDate}&endDate=${endDate}&statusOfDay=${statusOfDay}&userId=${userId}`
 			);
 
-			console.log("PIE DATA :: " + response);
+			// transform data:
+			let pData = [];
+			Object.keys(response.result.data).forEach((day) => {
+				pData.push(response.result.data[day].count);
+			});
+			setProductivityData(pData);
 		} catch (error) {
 			console.log(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 	const handleOnPieClick = async (index) => {
@@ -93,8 +103,13 @@ const PieChartWrapper = () => {
 		getPieChartData(selectedDataRange, 0);
 	}, []);
 
+	useEffect(() => {
+		getPieChartData(selectedDataRange, 0);
+	}, [statusOfDay]);
+
 	return (
 		<div className="w-full h-full flex-1 flex flex-col bg-[#111] gap-8 p-4 rounded-md">
+			{isLoading && <Loading />}
 			<div className="flex justify-between">
 				<h3 className="text-xl font-bold text-slate-300">Productivity by Days</h3>
 				<div className="flex gap-2 items-center">
@@ -137,7 +152,7 @@ const PieChartWrapper = () => {
 			<div className="w-full h-full flex flex-col justify-between lg:flex-row gap-4">
 				<div className="w-full lg:w-1/2 h-[500px] lg:h-full flex flex-col justify-start items-center gap-6">
 					<div className="w-full flex justify-end ">
-						<Select onValueChange={(value) => handleOnDataRangeChange(value)}>
+						<Select onValueChange={(value) => setStatusOfDay(value)}>
 							<SelectTrigger
 								className={`w-[110px] h-[30px] bg-[#222] border-none text-white rounded-md`}
 							>
@@ -156,11 +171,17 @@ const PieChartWrapper = () => {
 							</SelectContent>
 						</Select>
 					</div>
-					<PieChart
-						productivityData={dailyProductivity}
-						labels={pieChartLabels}
-						onPieClick={handleOnPieClick}
-					/>
+					{productivityData.length > 0 ? (
+						<PieChart
+							productivityData={productivityData}
+							labels={pieChartLabels}
+							onPieClick={handleOnPieClick}
+						/>
+					) : (
+						<div>
+							<p>Oops! No data available</p>
+						</div>
+					)}
 				</div>
 				{selectedDayData && (
 					<div className="w-full lg:w-1/2 h-[500px] lg:h-full">
