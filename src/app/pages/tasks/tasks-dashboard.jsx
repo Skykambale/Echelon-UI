@@ -129,7 +129,7 @@ const TaskDashboard = () => {
 			toast({ title: "Updated the status successfully" });
 		} catch (error) {
 			toast({
-				title: "Oops! Something went wrong while deleting the task",
+				title: "Oops! Something went wrong while updating the status of Day",
 				description: error.message,
 				variant: "destructive",
 			});
@@ -162,6 +162,7 @@ const TaskDashboard = () => {
 
 	useEffect(() => {
 		getQuote();
+		setStatusOfDay(0);
 	}, []);
 
 	return (
