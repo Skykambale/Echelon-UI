@@ -72,7 +72,7 @@ const Navbar = ({ isMobileView }) => {
 			<div className="px-1 flex flex-col items-start gap-6">
 				<div className="flex flex-col lg:flex-row items-center gap-2">
 					<FaFire className="text-red-500 " size={26} />
-					<span>{streak}</span>
+					<span className="text-amber-600">{streak}</span>
 				</div>
 				<UserButton />
 			</div>
