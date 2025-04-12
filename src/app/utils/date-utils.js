@@ -4,14 +4,14 @@ export function getStartAndEndDate(today, rangeType, operation) {
 		endDate: new Date(today),
 	};
 
-	if (rangeType === "month") {
+	if (String(rangeType).toLowerCase() === "monthly") {
 		let targetMonth = today.getMonth() + operation;
 		let targetYear = today.getFullYear() + Math.floor(targetMonth / 12);
 		targetMonth = (targetMonth + 12) % 12;
 
 		result.startDate = new Date(targetYear, targetMonth, 1);
 		result.endDate = new Date(targetYear, targetMonth + 1, 0); // last day of target month
-	} else if (rangeType === "week") {
+	} else if (String(rangeType).toLowerCase() === "weekly") {
 		const dayOfWeek = today.getDay(); // Sunday = 0
 		const startOfWeek = new Date(today);
 		startOfWeek.setDate(today.getDate() - dayOfWeek + operation * 7);
@@ -21,7 +21,7 @@ export function getStartAndEndDate(today, rangeType, operation) {
 
 		result.startDate = startOfWeek;
 		result.endDate = endOfWeek;
-	} else if (rangeType === "year") {
+	} else if (String(rangeType).toLowerCase() === "yearly") {
 		const targetYear = today.getFullYear() + operation;
 		result.startDate = new Date(targetYear, 0, 1); // Jan 1st
 		result.endDate = new Date(targetYear, 11, 31); // Dec 31st
