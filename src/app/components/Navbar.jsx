@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import { useRestSecurityClient } from "@/app/hooks/securityClient";
 const navOptions = [
 	{ label: "Visualize", path: "/visualize", icon: <FaChartSimple size={24} /> },
-	{ label: "Tasks", path: "/", icon: <FaTasks /> },
+	{ label: "Tasks", path: "/tasks", icon: <FaTasks /> },
 	{ label: "AI", path: "/ai", icon: <BsStars /> },
 ];
 

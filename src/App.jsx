@@ -7,6 +7,7 @@ import VisualizeLayout from "./app/pages/charts/visualize-layout";
 import { Toaster } from "./components/ui/toaster";
 import AIPage from "./app/pages/ai";
 import RoadmapDetails from "./app/pages/ai/RoadmapDetails";
+import Hero from "./app/pages/home";
 function App() {
 	// Check if user is logged in, if not redirect to login page.
 	const ProtectedRoute = ({ children }) => {
@@ -24,6 +25,7 @@ function App() {
 			<BrowserRouter>
 				<Routes>
 					<Route path="/signin" element={<SignInPage />}></Route>
+					<Route path="/" element={<Hero />}></Route>
 
 					<Route
 						path="/"
@@ -33,7 +35,7 @@ function App() {
 							</ProtectedRoute>
 						}
 					>
-						<Route index element={<TaskDashboard />}></Route>
+						<Route path="tasks" element={<TaskDashboard />}></Route>
 						<Route path="visualize" element={<VisualizeLayout />}></Route>
 						<Route path="ai" element={<AIPage />}></Route>
 						{/* AI sub routes */}
