@@ -34,6 +34,8 @@ export class CHART_CONSTANTS {
 				},
 				y: {
 					beginAtZero: false,
+					min: 0,
+					max: 4,
 					ticks: {
 						stepSize: 1,
 						color: "#aaa",
